@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  traefik:
+    command: >
+      --providers.docker.endpoint=tcp://127.0.0.1:2375
+      --providers.docker.swarmMode=true
+      --docker.exposedbydefault=false
+      --providers.docker.network=proxy
+      --providers.docker.constraints=Label(`traefik.tags`, `traefik-public`)
+      --accesslog=true
+      --metrics.prometheus=true
+      --api.dashboard=true
+      --entrypoints.web.address=:80
+      --entrypoints.websecure.address=:443
+      --certificatesResolvers.le.acme.email=${EMAIL}
+      --certificatesResolvers.le.acme.storage=acme.json
+      --certificatesResolvers.le.acme.httpChallenge=true
+      --certificatesResolvers.le.acme.httpChallenge.entryPoint=web
+  backend:
+    command:
+      [
+        "gunicorn",
+        "backend.asgi:application",
+        "-w",
+        "4",
+        "-k",
+        "uvicorn.workers.UvicornWorker",
+        "--bind",
+        "0.0.0.0:8000",
+      ]
+  redis-exporter:
+    command:
+      - "--redis.addr=redis://redis:6379"

@@ -1,0 +1,16 @@
+version: "3.7"
+services:
+  backend:
+    image: "${IMAGE_DOMAIN-localhost}/${PROJECT_NAME-pairwise_voting}-backend:${TAG-latest}"
+  celery_worker:
+    image: "${IMAGE_DOMAIN-localhost}/${PROJECT_NAME-pairwise_voting}-worker:${TAG-latest}"
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.3.5-amd64
+  exporter:
+    image: prom/node-exporter:v0.18.1
+  prometheus:
+    image: localhost/prometheus:latest
+  grafana:
+    image: localhost/grafana:latest
+  portainer:
+    image: portainer/portainer:1.23.0

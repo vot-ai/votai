@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  backend:
+    build:
+      args:
+        APP_ENV: prod
+      context: ../backend
+  celery_worker:
+    build:
+      args:
+        APP_ENV: prod
+      context: ../backend
+      dockerfile: worker.dockerfile
+  prometheus:
+    build:
+      context: ../monitoring/prometheus
+  grafana:
+    build:
+      context: ../monitoring/grafana

@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  traefik:
+    image: traefik:v2.2
+  postgres:
+    image: maronato/bpostgres:11
+  redis:
+    image: redis:5.0.4-alpine

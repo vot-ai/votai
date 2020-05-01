@@ -1,0 +1,108 @@
+version: "3.7"
+version: "3.7"
+services:
+  traefik:
+    deploy:
+      labels:
+        # Enable traefik
+        - traefik.enable=true
+        # Traefik constraints
+        - traefik.tags=traefik-public
+        # Use the proxy network for communication
+        - traefik.docker.network=proxy
+        # Traefik should live under traefik.DOMAIN
+        - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
+        # Register the Dashboard service
+        - traefik.http.routers.traefik.service=api@internal
+        # Add Authentication to prevent unauthorized access to the dashboard
+        - traefik.http.routers.traefik.middlewares=traefik_service_auth
+        # Users and passwords
+        - traefik.http.middlewares.traefik_service_auth.basicauth.usersfile=/run/secrets/traefik_users
+        # Dummy service for Swarm port detection. The port can be any valid integer value.
+        - traefik.http.services.dummy-svc.loadbalancer.server.port=9999
+        # Enable tls through Lets Encrypt
+        - traefik.http.routers.traefik.tls=true
+        - traefik.http.routers.traefik.tls.certresolver=le
+        # Configure Traefik to redirect all http requests to https
+        - traefik.http.middlewares.https_redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https_redirect.redirectscheme.permanent=true
+        - traefik.http.routers.http_catchall.rule=HostRegexp(`{any:.+}`)
+        - traefik.http.routers.http_catchall.entrypoints=web
+        - traefik.http.routers.http_catchall.middlewares=https_redirect
+        # Accept only https
+        - traefik.http.routers.traefik.entrypoints=websecure
+  backend:
+    deploy:
+      labels:
+        # Enable traefik
+        - traefik.enable=true
+        # Traefik constraints
+        - traefik.tags=traefik-public
+        # Use the proxy network for communication
+        - traefik.docker.network=proxy
+        # Backend should live under api.DOMAIN
+        - traefik.http.routers.backend.rule=Host(`api.${DOMAIN}`)
+        # Make sure the loadbalancer uses the correct port
+        - traefik.http.services.backend.loadbalancer.server.port=8000
+        # Enable tls through Lets Encrypt
+        - traefik.http.routers.backend.tls=true
+        - traefik.http.routers.backend.tls.certresolver=le
+        # Accept both http and https
+        - traefik.http.routers.backend.entrypoints=websecure
+  grafana:
+    deploy:
+      labels:
+        # Enable traefik
+        - traefik.enable=true
+        # Traefik constraints
+        - traefik.tags=traefik-public
+        # Use the proxy network for communication
+        - traefik.docker.network=proxy
+        # Grafana should live under grafana.DOMAIN
+        - traefik.http.routers.grafana.rule=Host(`grafana.${DOMAIN}`)
+        # Make sure the loadbalancer uses the correct port
+        - traefik.http.services.grafana.loadbalancer.server.port=3000
+        # Enable tls through Lets Encrypt
+        - traefik.http.routers.grafana.tls=true
+        - traefik.http.routers.grafana.tls.certresolver=le
+        # Accept only https
+        - traefik.http.routers.grafana.entrypoints=websecure
+  prometheus:
+    deploy:
+      labels:
+        # Enable traefik
+        - traefik.enable=true
+        # Traefik constraints
+        - traefik.tags=traefik-public
+        # Use the proxy network for communication
+        - traefik.docker.network=proxy
+        # Prometheus should live under prometheus.DOMAIN
+        - traefik.http.routers.prometheus.rule=Host(`prometheus.${DOMAIN}`)
+        # Make sure the loadbalancer uses the correct port
+        - traefik.http.services.prometheus.loadbalancer.server.port=9090
+        # Enable tls through Lets Encrypt
+        - traefik.http.routers.prometheus.tls=true
+        - traefik.http.routers.prometheus.tls.certresolver=le
+        # Accept only https
+        - traefik.http.routers.prometheus.entrypoints=websecure
+        # Lock prometheus behind an authentication layer since it does not have one
+        - traefik.http.routers.prometheus.middlewares=prometheus_service_auth
+        - traefik.http.middlewares.prometheus_service_auth.basicauth.usersfile=/run/secrets/prometheus_users
+  portainer:
+    deploy:
+      labels:
+        # Enable traefik
+        - traefik.enable=true
+        # Traefik constraints
+        - traefik.tags=traefik-public
+        # Use the proxy network for communication
+        - traefik.docker.network=proxy
+        # Portainer should live under portainer.DOMAIN
+        - traefik.http.routers.portainer.rule=Host(`portainer.${DOMAIN}`)
+        # Make sure the loadbalancer uses the correct port
+        - traefik.http.services.portainer.loadbalancer.server.port=9000
+        # Enable tls through Lets Encrypt
+        - traefik.http.routers.portainer.tls=true
+        - traefik.http.routers.portainer.tls.certresolver=le
+        # Accept only https
+        - traefik.http.routers.portainer.entrypoints=websecure

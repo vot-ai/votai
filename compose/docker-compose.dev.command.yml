@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  traefik:
+    command: >
+      --providers.docker
+      --api.dashboard=true
+      --api.insecure=true
+      --entryPoints.web.address=:80
+      --entryPoints.postgres.address=:5432
+      --entryPoints.redis.address=:6379
+      --entryPoints.backend-debug.address=:7913
+  backend:
+    command: python manage.py runserver_plus 0.0.0.0:8000

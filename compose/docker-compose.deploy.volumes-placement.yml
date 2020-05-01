@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  traefik:
+    volumes:
+      - ../acme.json:/acme.json
+      - ../.htpasswd:/.htpasswd
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+  prometheus:
+    volumes:
+      - prometheus_data:/prometheus
+  grafana:
+    volumes:
+      - grafana_data:/data
+  portainer:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+volumes:
+  prometheus_data:
+  grafana_data:
+  portainer_data:

@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  backend:
+    volumes:
+      - ../django.secrets:/DJANGO_SECRETS
+      - ../backend:/app
+  celery_worker:
+    volumes:
+      - ../django.secrets:/DJANGO_SECRETS
+      - ../backend:/app
