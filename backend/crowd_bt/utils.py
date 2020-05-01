@@ -1,7 +1,28 @@
-from typing import Callable, Iterable
+from typing import Callable, Sequence, TypeVar
+from random import sample
 import numpy as np
 from scipy.special import psi, beta
 from .types import RelevanceScore, AnnotatorConfidence
+
+T = TypeVar("T")
+
+
+def random_argmax(__func: Callable[[Sequence[T]], T], __iter: Sequence[T]) -> T:
+    """Random Argmax
+
+    Given an iterable and a function, return the value that produces the maximum output
+    when applied to the function.
+
+    Shuffles input iterable so draws are randomly selected
+
+    Arguments:
+        __func {Callable[[Iterable[T]], T]} -- Maximization function
+        __iter {Iterable[T]} -- Iterable of values to be maximized
+
+    Returns:
+        T -- Element of the iterable that produced the maximum
+    """
+    return max(sample(__iter, len(__iter)), key=__func)
 
 
 def gaussian_relative_entropy(score1: RelevanceScore, score2: RelevanceScore) -> float:
