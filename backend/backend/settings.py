@@ -25,7 +25,7 @@ django_secrets = read_env(os.environ.get("SECRETS_PATH"), "DJANGO_SECRETS")
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = django_secrets.get("SECRET_KEY")
+SECRET_KEY = django_secrets.get("SECRET_KEY", "abc123")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").capitalize() == "True"
