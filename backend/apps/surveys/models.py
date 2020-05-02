@@ -10,7 +10,7 @@ user_model = get_user_model()
 
 class Survey(models.Model):
     name: str = models.CharField(max_length=30)
-    metadata = JSONField()
+    metadata = JSONField(default=dict)
     active: bool = models.BooleanField(default=True)
     created: datetime = models.DateTimeField(auto_now_add=True)
     updated: datetime = models.DateTimeField(auto_now=True)

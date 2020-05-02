@@ -1,11 +1,13 @@
 from rest_framework import serializers
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
-from backend.mixins import PrefetchMixin
+from backend.mixins import PrefetchMixin, QueryFieldsMixin
 from apps.surveys.models import Survey
 from .models import Item
 
 
-class ItemSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer):
+class ItemSerializer(
+    PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer
+):
 
     url = NestedHyperlinkedIdentityField(
         view_name="api:item-detail",
@@ -41,3 +43,21 @@ class ItemSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer):
         ]
         read_only_fields = ["mu", "sigma_squared", "survey", "active"]
         select_related_fields = ["survey"]
+
+
+class PrioritizeSerializer(ItemSerializer):
+    def create(self, validated_data):
+        raise NotImplementedError("Creation is not allowed")
+
+    def update(self, instance: Item, validated_data):
+        instance.prioritize()
+        return instance
+
+    class Meta(ItemSerializer.Meta):
+        read_only_fields = "__all__"
+
+
+class DeprioritizeSerializer(PrioritizeSerializer):
+    def update(self, instance: Item, validated_data):
+        instance.deprioritize()
+        return instance

@@ -32,6 +32,9 @@ DEBUG = os.environ.get("DEBUG", "False").capitalize() == "True"
 
 ALLOWED_HOSTS = eval(os.environ.get("ALLOWED_HOSTS", '["localhost", "backend"]'))
 
+# Website root url
+ROOT_URL = django_secrets.get("ROOT_URL", "http://api.localhost")
+
 
 # Application definition
 
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     "apps.items",
     "apps.labels",
     "apps.surveys",
+    "apps.main",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -53,6 +57,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_extensions",
     "debug_toolbar",
+    "drf_yasg",
 ]
 
 MIDDLEWARE = [
@@ -191,8 +196,14 @@ SIMPLE_JWT = {
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda x: True,
     # Toolbar options
-    'RESULTS_CACHE_SIZE': 3,
-    'SHOW_COLLAPSED': True,
+    "RESULTS_CACHE_SIZE": 3,
+    "SHOW_COLLAPSED": True,
     # Panel options
-    'SQL_WARNING_THRESHOLD': 100,   # milliseconds
+    "SQL_WARNING_THRESHOLD": 100,  # milliseconds
+}
+
+
+# Documentation settings
+SWAGGER_SETTINGS = {
+    'DEFAULT_AUTO_SCHEMA_CLASS': 'backend.swagger_schema.CustomTagAutoSchema',
 }

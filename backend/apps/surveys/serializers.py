@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from backend.mixins import PrefetchMixin
+from backend.mixins import PrefetchMixin, QueryFieldsMixin
 from .models import Survey
 
 
-class SurveySerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer):
+class SurveySerializer(PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer):
 
     url = serializers.HyperlinkedIdentityField(view_name="api:survey-detail")
 

@@ -30,8 +30,8 @@ class OwnsObject(permissions.BasePermission):
         user_relation = getattr(view, "user_relation", "user")
         obj_field = obj_qs.first()
         for field in ownership_field.split("."):
-            obj_field = getattr(obj_field, field)
+            obj_field = getattr(obj_field, field, None)
         u_rel = request
         for field in user_relation.split("."):
-            u_rel = getattr(u_rel, field)
-        return obj_field == u_rel
+            u_rel = getattr(u_rel, field, None)
+        return obj_field == u_rel and obj_field is not None

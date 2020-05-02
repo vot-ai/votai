@@ -1,8 +1,45 @@
 from rest_framework import serializers
-from rest_framework_nested.relations import NestedHyperlinkedIdentityField, NestedHyperlinkedRelatedField
+from rest_framework_nested.relations import (
+    NestedHyperlinkedIdentityField,
+    NestedHyperlinkedRelatedField,
+)
 from backend.mixins import PrefetchMixin
 from apps.surveys.models import Survey
+from apps.items.serializers import ItemSerializer
 from .models import Annotator
+
+
+class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
+    current = ItemSerializer(read_only=True)
+    previous = ItemSerializer(read_only=True)
+
+    def create(self, validated_data):
+        raise NotImplementedError("Creation is not allowed")
+
+    def update(self, instance: Annotator, validated_data):
+        instance.ignore()
+        return instance
+
+    class Meta:
+        model = Annotator
+        fields = ["current", "previous"]
+        select_related_fields = [
+            "current",
+            "current__survey",
+            "previous",
+            "previous__survey",
+        ]
+
+
+class VoteSerializer(IgnoreSerializer):
+    current_wins = serializers.BooleanField(write_only=True)
+
+    def update(self, instance: Annotator, validated_data):
+        instance.vote(**validated_data)
+        return instance
+
+    class Meta(IgnoreSerializer.Meta):
+        fields = IgnoreSerializer.Meta.fields + ["current_wins"]
 
 
 class AnnotatorSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer):
@@ -34,22 +71,6 @@ class AnnotatorSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer)
         lookup_url_kwarg="pk",
         parent_lookup_kwargs={"survey_pk": "survey__pk"},
     )
-    ignored = NestedHyperlinkedRelatedField(
-        label="Ignored items",
-        read_only=True,
-        many=True,
-        view_name="api:item-detail",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
-    )
-    viewed = NestedHyperlinkedRelatedField(
-        label="Viewed items",
-        read_only=True,
-        many=True,
-        view_name="api:item-detail",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
-    )
 
     def create(self, validated_data):
         view = self.context["view"]
@@ -57,7 +78,6 @@ class AnnotatorSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer)
         if survey_id:
             validated_data["survey"] = Survey.objects.get(id=survey_id)
         return Annotator.create_annotator(**validated_data)
-
 
     class Meta:
         model = Annotator
@@ -69,12 +89,25 @@ class AnnotatorSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer)
             "active",
             "current",
             "previous",
+            "alpha",
+            "beta",
+            "quality",
+        ]
+        read_only_fields = [
+            "active",
+            "survey",
+            "current",
+            "previous",
             "ignored",
             "viewed",
             "alpha",
             "beta",
             "quality",
         ]
-        read_only_fields = ["active", "survey", "current", "previous", "ignored", "viewed", "alpha", "beta", "quality"]
-        select_related_fields = ["survey", "current", "current__survey", "previous", "previous__survey"]
-        prefetch_related_fields = ["ignored", "ignored__survey", "viewed", "viewed__survey"]
+        select_related_fields = [
+            "survey",
+            "current",
+            "current__survey",
+            "previous",
+            "previous__survey",
+        ]

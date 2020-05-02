@@ -7,7 +7,7 @@ from crowd_bt.types import Mu, SigmaSquared, RelevanceScore
 
 class Item(models.Model):
     name: str = models.CharField(max_length=30)
-    metadata = JSONField()
+    metadata = JSONField(default=dict)
     active: bool = models.BooleanField(default=False)
     prioritized: bool = models.BooleanField(default=False)
     survey: Survey = models.ForeignKey(
@@ -26,7 +26,7 @@ class Item(models.Model):
         self.save()
 
     def deprioritize(self):
-        self.prioritized = True
+        self.prioritized = False
         self.save()
 
     def activate(self):

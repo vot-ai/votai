@@ -14,7 +14,7 @@ from crowd_bt.online import update_scores, update_annotator
 
 class Annotator(models.Model):
     name: str = models.CharField(max_length=30)
-    metadata = JSONField()
+    metadata = JSONField(default=dict)
     active: str = models.BooleanField(default=True)
     survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE, related_name="annotators"
@@ -104,13 +104,22 @@ class Annotator(models.Model):
                 Label.create_label(self, self.previous, self.current)
                 self.bt_update(self.previous, self.current)
 
-        # Get next item
+        return self.update_items()
+
+    def ignore(self):
+        if self.current is None:
+            return None
+
+        self.ignored.add(self.current)
+
+        return self.update_items()
+
+    def update_items(self):
         next_item = self.choose_next()
 
         if self.survey.allow_concurrent:
             self.current.deactivate()
 
-        # Swap previous and current
         self.previous = self.current
         self.current = next_item
         self.save()
@@ -120,26 +129,6 @@ class Annotator(models.Model):
                 self.current.activate()
             self.current.deprioritize()
             self.viewed.add(self.current)
-
-        return self.current
-
-    def ignore(self):
-        if self.current is None:
-            return None
-
-        next_item = self.choose_next()
-
-        if self.survey.allow_concurrent:
-            self.current.deactivate()
-
-        self.ignored.add(self.current)
-        self.current = next_item
-        self.save()
-
-        if self.current is not None:
-            if self.survey.allow_concurrent:
-                self.current.activate()
-            self.current.deprioritize()
 
         return self.current
 

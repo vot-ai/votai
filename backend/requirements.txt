@@ -24,6 +24,7 @@ djangorestframework-simplejwt==4.4.0
 dj-rest-auth==1.0.4
 rest-condition==1.0.3
 drf-nested-routers==0.91
+drf-yasg==1.17.1
 
 # Monitoring
 django-prometheus==2.0.0
