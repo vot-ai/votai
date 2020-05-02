@@ -136,7 +136,5 @@ class Annotator(models.Model):
     def create_annotator(cls, **data):
         annotator: cls = cls(**data)
         annotator.save()
-        annotator.current = annotator.choose_next()
-        annotator.viewed.add(annotator.current)
-        annotator.save()
+        annotator.update_items()
         return annotator

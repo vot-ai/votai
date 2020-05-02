@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_condition import And
 from backend.permissions import OwnsObject
 from backend.mixins import PrefetchQuerysetModelMixin
-from .serializers import ItemSerializer
+from .serializers import ItemSerializer, PrioritizeSerializer, DeprioritizeSerializer
 from .models import Item
 
 
@@ -20,6 +20,13 @@ class SurveyItemViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
         if self.action == "ranking":
             qs = qs.order_by("-mu")
         return qs
+    
+    def get_serializer_class(self):
+        if self.action == "prioritize":
+            return PrioritizeSerializer
+        if self.action == "deprioritize":
+            return DeprioritizeSerializer
+        return super().get_serializer_class()
 
     @action(detail=False, methods=["get"])
     def ranking(self, request, *args, **kwargs):
@@ -27,12 +34,8 @@ class SurveyItemViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
 
     @action(detail=True, methods=["post"])
     def prioritize(self, request, *args, **kwargs):
-        instance: Item = self.get_object()
-        instance.prioritize()
-        return self.retrieve(request, *args, **kwargs)
+        return self.update(request, *args, **kwargs)
     
     @action(detail=True, methods=["post"])
     def deprioritize(self, request, *args, **kwargs):
-        instance: Item = self.get_object()
-        instance.deprioritize()
-        return self.retrieve(request, *args, **kwargs)
+        return self.update(request, *args, **kwargs)

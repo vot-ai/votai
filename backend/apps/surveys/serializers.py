@@ -5,17 +5,17 @@ from .models import Survey
 
 class SurveySerializer(PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer):
 
-    url = serializers.HyperlinkedIdentityField(view_name="api:survey-detail")
+    url = serializers.HyperlinkedIdentityField(label="This resource's URL", view_name="api:survey-detail")
 
     items = serializers.HyperlinkedIdentityField(
-        label="Survey items",
+        label="URL for a list of items belonging to this survey",
         read_only=True,
         view_name="api:item-list",
         lookup_url_kwarg="survey_pk",
     )
 
     annotators = serializers.HyperlinkedIdentityField(
-        label="Survey annotators",
+        label="URL for a list of annotators belonging to this survey",
         read_only=True,
         view_name="api:annotator-list",
         lookup_url_kwarg="survey_pk",

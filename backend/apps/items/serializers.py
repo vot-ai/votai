@@ -10,13 +10,14 @@ class ItemSerializer(
 ):
 
     url = NestedHyperlinkedIdentityField(
+        label="This resource's URL",
         view_name="api:item-detail",
         lookup_url_kwarg="pk",
         parent_lookup_kwargs={"survey_pk": "survey__pk"},
     )
 
     survey = serializers.HyperlinkedRelatedField(
-        label="Survey",
+        label="Parent survey's URL",
         read_only=True,
         view_name="api:survey-detail",
         lookup_url_kwarg="pk",
@@ -41,7 +42,7 @@ class ItemSerializer(
             "mu",
             "sigma_squared",
         ]
-        read_only_fields = ["mu", "sigma_squared", "survey", "active"]
+        read_only_fields = ["mu", "sigma_squared", "survey", "active", "prioritized"]
         select_related_fields = ["survey"]
 
 
@@ -54,7 +55,7 @@ class PrioritizeSerializer(ItemSerializer):
         return instance
 
     class Meta(ItemSerializer.Meta):
-        read_only_fields = "__all__"
+        read_only_fields = ItemSerializer.Meta.fields
 
 
 class DeprioritizeSerializer(PrioritizeSerializer):

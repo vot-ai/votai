@@ -179,12 +179,11 @@ SHELL_PLUS_SQLPARSE_FORMAT_KWARGS = dict(reindent_aligned=True, truncate_strings
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 20,
 }
 
 REST_USE_JWT = True
-REST_AUTH_SERIALIZERS = {
-    "USER_DETAILS_SERIALIZER": "social.serializers.UserDetailsSerializer"
-}
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
@@ -205,5 +204,5 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # Documentation settings
 SWAGGER_SETTINGS = {
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'backend.swagger_schema.CustomTagAutoSchema',
+    "DEFAULT_AUTO_SCHEMA_CLASS": "backend.swagger_schema.CustomTagAutoSchema",
 }

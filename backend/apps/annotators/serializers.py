@@ -3,15 +3,15 @@ from rest_framework_nested.relations import (
     NestedHyperlinkedIdentityField,
     NestedHyperlinkedRelatedField,
 )
-from backend.mixins import PrefetchMixin
+from backend.mixins import PrefetchMixin, QueryFieldsMixin
 from apps.surveys.models import Survey
 from apps.items.serializers import ItemSerializer
 from .models import Annotator
 
 
 class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
-    current = ItemSerializer(read_only=True)
-    previous = ItemSerializer(read_only=True)
+    current = ItemSerializer(label="Current item's data", read_only=True)
+    previous = ItemSerializer(label="Previous item's data", read_only=True)
 
     def create(self, validated_data):
         raise NotImplementedError("Creation is not allowed")
@@ -23,6 +23,7 @@ class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
     class Meta:
         model = Annotator
         fields = ["current", "previous"]
+        read_only_fields = ["current", "previous"]
         select_related_fields = [
             "current",
             "current__survey",
@@ -32,7 +33,10 @@ class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
 
 
 class VoteSerializer(IgnoreSerializer):
-    current_wins = serializers.BooleanField(write_only=True)
+    current_wins = serializers.BooleanField(
+        label="Whether the current item is the winner. Set to false if the previous is the winner",
+        write_only=True,
+    )
 
     def update(self, instance: Annotator, validated_data):
         instance.vote(**validated_data)
@@ -42,30 +46,33 @@ class VoteSerializer(IgnoreSerializer):
         fields = IgnoreSerializer.Meta.fields + ["current_wins"]
 
 
-class AnnotatorSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer):
+class AnnotatorSerializer(
+    PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer
+):
 
     url = NestedHyperlinkedIdentityField(
+        label="This resource's URL",
         view_name="api:annotator-detail",
         lookup_url_kwarg="pk",
         parent_lookup_kwargs={"survey_pk": "survey__pk"},
     )
 
     survey = serializers.HyperlinkedRelatedField(
-        label="Survey",
+        label="Parent survey's URL",
         read_only=True,
         view_name="api:survey-detail",
         lookup_url_kwarg="pk",
     )
 
     current = NestedHyperlinkedRelatedField(
-        label="Current item",
+        label="Current item's URL",
         read_only=True,
         view_name="api:item-detail",
         lookup_url_kwarg="pk",
         parent_lookup_kwargs={"survey_pk": "survey__pk"},
     )
     previous = NestedHyperlinkedRelatedField(
-        label="Previous item",
+        label="Previous item's URL",
         read_only=True,
         view_name="api:item-detail",
         lookup_url_kwarg="pk",
@@ -94,12 +101,9 @@ class AnnotatorSerializer(PrefetchMixin, serializers.HyperlinkedModelSerializer)
             "quality",
         ]
         read_only_fields = [
-            "active",
             "survey",
             "current",
             "previous",
-            "ignored",
-            "viewed",
             "alpha",
             "beta",
             "quality",
