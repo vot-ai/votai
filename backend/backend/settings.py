@@ -36,6 +36,10 @@ ALLOWED_HOSTS = eval(os.environ.get("ALLOWED_HOSTS", '["localhost", "backend"]')
 # Application definition
 
 INSTALLED_APPS = [
+    "apps.annotators",
+    "apps.items",
+    "apps.labels",
+    "apps.surveys",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -48,16 +52,13 @@ INSTALLED_APPS = [
     "dj_rest_auth",
     "corsheaders",
     "django_extensions",
-
-    "annotators",
-    "items",
-    "labels",
-    "surveys"
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
     # "django_prometheus.middleware.PrometheusBeforeMiddleware"
     "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -185,4 +186,13 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
+}
+
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": lambda x: True,
+    # Toolbar options
+    'RESULTS_CACHE_SIZE': 3,
+    'SHOW_COLLAPSED': True,
+    # Panel options
+    'SQL_WARNING_THRESHOLD': 100,   # milliseconds
 }

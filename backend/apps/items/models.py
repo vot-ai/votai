@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-from surveys.models import Survey
+from apps.surveys.models import Survey
 from crowd_bt.constants import MU, SIGMA_SQUARED
 from crowd_bt.types import Mu, SigmaSquared, RelevanceScore
 
 
 class Item(models.Model):
     name: str = models.CharField(max_length=30)
-    metadata = JSONField(name="Metadata")
+    metadata = JSONField()
     active: bool = models.BooleanField(default=False)
     prioritized: bool = models.BooleanField(default=False)
     survey: Survey = models.ForeignKey(

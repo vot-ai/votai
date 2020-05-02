@@ -1,8 +1,8 @@
 from datetime import datetime
 from django.db import models
-from surveys.models import Survey
-from annotators.models import Annotator
-from items.models import Item
+from apps.surveys.models import Survey
+from apps.annotators.models import Annotator
+from apps.items.models import Item
 
 
 class Label(models.Model):

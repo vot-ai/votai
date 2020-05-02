@@ -2,9 +2,9 @@ from typing import Callable, Optional
 from numpy.random import random, choice
 from django.db import models
 from django.contrib.postgres.fields import JSONField
-from items.models import Item
-from surveys.models import Survey
-from custom_types import QueryType
+from apps.items.models import Item
+from apps.surveys.models import Survey
+from backend.custom_types import QueryType
 from crowd_bt.types import Alpha, Beta, AnnotatorConfidence
 from crowd_bt.constants import ALPHA, BETA
 from crowd_bt.entropy import expected_information_gain
@@ -14,7 +14,7 @@ from crowd_bt.online import update_scores, update_annotator
 
 class Annotator(models.Model):
     name: str = models.CharField(max_length=30)
-    metadata = JSONField(name="Metadata")
+    metadata = JSONField()
     active: str = models.BooleanField(default=True)
     survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE, related_name="annotators"
@@ -95,7 +95,7 @@ class Annotator(models.Model):
 
         # If this is not the first vote
         if self.previous is not None:
-            from labels.models import Label
+            from apps.labels.models import Label
 
             if current_wins:
                 Label.create_label(self, self.current, self.previous)
@@ -142,3 +142,12 @@ class Annotator(models.Model):
             self.current.deprioritize()
 
         return self.current
+
+    @classmethod
+    def create_annotator(cls, **data):
+        annotator: cls = cls(**data)
+        annotator.save()
+        annotator.current = annotator.choose_next()
+        annotator.viewed.add(annotator.current)
+        annotator.save()
+        return annotator
