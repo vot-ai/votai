@@ -28,3 +28,8 @@ django-prometheus==2.0.0
 # Math
 numpy==1.18.3
 scipy==1.4.1
+
+# Lint and type
+black==19.10b0
+pylint==2.5.0
+pylint-django==2.0.15

@@ -18,12 +18,11 @@ def read_env(path, filename):
     environment variables from an environment file
     """
 
-    filePath = os.path.join(path, filename)
-
     try:
-        with open(filePath) as f:
-            content = f.read()
-    except IOError:
+        file_path = os.path.join(path, filename)
+        with open(file_path) as file:
+            content = file.read()
+    except (IOError, TypeError):
         content = ""
 
     environment_variables = EnvironmentVariables()

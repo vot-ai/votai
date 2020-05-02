@@ -18,7 +18,7 @@ RUN apt-get clean
 WORKDIR /app
 
 ## add user
-RUN addgroup --system user && adduser --system --no-create-home --group user
+RUN addgroup --system user && adduser --system --group user
 RUN chown -R user:user /app && chmod -R 755 /app
 
 # Create venv

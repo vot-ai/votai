@@ -1,5 +1,7 @@
 from typing import Final
 
+
+
 """Kappa (κ)
 
 Used by equation (13) and (14)

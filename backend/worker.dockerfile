@@ -18,7 +18,7 @@ RUN apt-get clean
 WORKDIR /app
 
 ## add user
-RUN addgroup --system user && adduser --system --no-create-home --group user
+RUN addgroup --system user && adduser --system --group user
 RUN chown -R user:user /app && chmod -R 755 /app
 
 # Create venv
@@ -70,7 +70,7 @@ FROM ${APP_ENV}-prefinal as final
 COPY --from=cleanup /opt/venv /opt/venv
 
 # Prepare entrypoint
-COPY docker-entrypoint.sh worker-entrypoint.sh
+COPY worker-entrypoint.sh docker-entrypoint.sh
 RUN chmod a+x docker-entrypoint.sh
 
 ## switch to non-root user

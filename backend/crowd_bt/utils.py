@@ -7,7 +7,7 @@ from .types import RelevanceScore, AnnotatorConfidence
 T = TypeVar("T")
 
 
-def random_argmax(__func: Callable[[Sequence[T]], T], __iter: Sequence[T]) -> T:
+def random_argmax(__func: Callable[[T], float], __iter: Sequence[T]) -> T:
     """Random Argmax
 
     Given an iterable and a function, return the value that produces the maximum output
@@ -16,7 +16,7 @@ def random_argmax(__func: Callable[[Sequence[T]], T], __iter: Sequence[T]) -> T:
     Shuffles input iterable so draws are randomly selected
 
     Arguments:
-        __func {Callable[[Iterable[T]], T]} -- Maximization function
+        __func {Callable[[T], float]} -- Maximization function
         __iter {Iterable[T]} -- Iterable of values to be maximized
 
     Returns:
