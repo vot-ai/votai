@@ -18,8 +18,8 @@ class Survey(models.Model):
         user_model, on_delete=models.CASCADE, related_name="surveys"
     )
 
-    max_time: int = models.IntegerField(default=10 * 60)
-    min_views: int = models.IntegerField(default=5)
+    max_time: int = models.PositiveSmallIntegerField(default=10 * 60)
+    min_views: int = models.PositiveSmallIntegerField(default=5)
     allow_concurrent: bool = models.BooleanField(default=True)
 
     gamma: float = models.FloatField(default=GAMMA)
