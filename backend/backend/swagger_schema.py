@@ -12,37 +12,16 @@ tag_extra_data = {
     "Survey": {
         "name": "Survey",
         "description": """
-Nossa API de motoristas lhe permite construir serviços e soluções que tornam as vidas dos motoristas mais fáceis. Com a permissão do motorista, você consegue gerenciar caronas, passageiros e mais.
-
-## Caronas
-Ajude motoristas a gerenciar suas caronas, criando, listando e editando todas as viagens que decidirem fazer.
-
-## Passageiros
-Dê total controle aos seus motoristas sobre quem vai ou não em suas caronas. Gerencie aprovação e rejeição de passageiros e use os dados fornecidos para ajudar seus motoristas a fazerem viagens seguras e tranquilas.
-
-> **Atenção:** Todos os endpoints dessa API só podem ser acessados caso seu usuário seja um *motorista*. Para saber se é motorista, o resultado do campo **driver** do endpoint [*Usuário Atual*](#operation/user_read) tem que ser diferente de `null`.
 """,
     },
     "Annotator": {
         "name": "Annotator",
         "description": """
-Nossa API de passageiros lhe permite construir serviços e soluções que tornam as vidas dos passageiros mais fáceis. Com a permissão do motorista, você consegue gerenciar as caronas do seu usuário e executar ações nelas.
-
-## Caronas
-Ajude passageiros a entrar e sair de caronas, listar caronas passadas e futuras e muito mais.
 """,
     },
     "Item": {
         "name": "Item",
         "description": """
-Veja os detalhes e informações do usuário que te deu permissão com a API de usuários.
-
-## Dados e permissões
-A API de usuário funciona sobre o usuário que autorizou seu aplicativo e te permite acessar os dados relacionados às permissões garantidas.
-
-Os resultados da API de usuário se modificam dinamicamente de acordo com as permissões que o usuário te fornece, garantindo flexibilidade para você, que só terá que se preocupar com os dados que for usar, e privacidade ao usuário, que sempre vai saber que dados serão acessados por você.
-
-> **Nota:** Por enquanto as únicas permissões que essa API garante são de *leitura* dos dados. Para que seu usuário altere seus dados, redirecione-o para o site principal do Unicaronas.
 """,
     },
 }
