@@ -39,7 +39,7 @@ class SurveyItemViewset(PrefetchQuerysetModelMixin, QueryFieldsMixin, viewsets.M
 
         Returns the list of items ranked from best to worst.
         """
-        return self.list(request, *args, **kwargs)
+        return super().list(request, *args, **kwargs)
 
     @action(detail=True, methods=["post"])
     def prioritize(self, request, *args, **kwargs):
@@ -47,7 +47,7 @@ class SurveyItemViewset(PrefetchQuerysetModelMixin, QueryFieldsMixin, viewsets.M
 
         Prioritizes an item so it is assigned to an annotator faster.
         """
-        return self.update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     @action(detail=True, methods=["post"])
     def deprioritize(self, request, *args, **kwargs):
@@ -55,7 +55,7 @@ class SurveyItemViewset(PrefetchQuerysetModelMixin, QueryFieldsMixin, viewsets.M
 
         Deprioritizes item. Note that this happens automatically once it is assigned to an annotator.
         """
-        return self.update(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     @swagger_auto_schema(responses={400: "Request data is missing or contains errors"})
     def create(self, *args, **kwargs):

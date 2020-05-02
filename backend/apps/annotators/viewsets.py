@@ -48,7 +48,7 @@ class SurveyAnnotatorViewset(
         
         if not annotator.survey.active:
             raise InactiveSurveyError("Cannot vote because the survey is inactive")
-        return self.update(request, **kwargs)
+        return super().update(request, **kwargs)
 
     @swagger_auto_schema(responses={400: "Annotator/Survey are inactive"})
     @action(detail=True, methods=["post"])
@@ -63,7 +63,7 @@ class SurveyAnnotatorViewset(
         
         if not annotator.survey.active:
             raise InactiveSurveyError("Cannot skip because the survey is inactive")
-        return self.update(request, **kwargs)
+        return super().update(request, **kwargs)
 
     @swagger_auto_schema(responses={400: "Request data is missing or contains errors"})
     def create(self, *args, **kwargs):
