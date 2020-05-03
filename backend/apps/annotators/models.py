@@ -72,7 +72,7 @@ class Annotator(models.Model):
 
         chosen: Optional[Item] = None
 
-        list_options = list(options)
+        list_options = list(options.only("mu", "sigma_squared"))
 
         if list_options:
             # epsilon greedy
