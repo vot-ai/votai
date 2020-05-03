@@ -130,8 +130,6 @@ class Annotator(models.Model):
                 self.current.activate()
             self.current.deprioritize()
             self.viewed.add(self.current)
-
-        self.create_annotator(name="hey")
         return self.current
 
     @classmethod
