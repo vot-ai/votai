@@ -11,40 +11,6 @@ from apps.items.serializers import ItemSerializer
 from .models import Annotator
 
 
-class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
-    current = ItemSerializer(label="Current item's data", read_only=True)
-    previous = ItemSerializer(label="Previous item's data", read_only=True)
-
-    def update(self, instance: Annotator, validated_data: Any) -> Annotator:
-        instance.ignore()
-        return instance
-
-    class Meta:
-        model = Annotator
-        fields = ["current", "previous"]
-        read_only_fields = ["current", "previous"]
-        select_related_fields = [
-            "current",
-            "current__survey",
-            "previous",
-            "previous__survey",
-        ]
-
-
-class VoteSerializer(IgnoreSerializer):
-    current_wins = serializers.BooleanField(
-        label="Whether the current item is the winner. Set to false if the previous is the winner",
-        write_only=True,
-    )
-
-    def update(self, instance: Annotator, validated_data: Any) -> Annotator:
-        instance.vote(**validated_data)
-        return instance
-
-    class Meta(IgnoreSerializer.Meta):
-        fields = IgnoreSerializer.Meta.fields + ["current_wins"]
-
-
 class AnnotatorSerializer(
     PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer
 ):
@@ -78,6 +44,21 @@ class AnnotatorSerializer(
         parent_lookup_kwargs={"survey_pk": "survey__pk"},
     )
 
+    vote = NestedHyperlinkedIdentityField(
+        label="Voting URL",
+        read_only=True,
+        view_name="api:annotator-vote",
+        lookup_url_kwarg="pk",
+        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    )
+    skip = NestedHyperlinkedIdentityField(
+        label="Skipping URL",
+        read_only=True,
+        view_name="api:annotator-skip",
+        lookup_url_kwarg="pk",
+        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    )
+
     def create(self, validated_data: Any) -> Annotator:
         view = self.context["view"]
         survey_id = validated_data.get("survey", view.kwargs.get("survey_pk"))
@@ -95,6 +76,8 @@ class AnnotatorSerializer(
             "active",
             "current",
             "previous",
+            "vote",
+            "skip",
             "alpha",
             "beta",
             "quality",
@@ -106,6 +89,8 @@ class AnnotatorSerializer(
             "alpha",
             "beta",
             "quality",
+            "vote",
+            "skip",
         ]
         select_related_fields = [
             "survey",
@@ -114,3 +99,52 @@ class AnnotatorSerializer(
             "previous",
             "previous__survey",
         ]
+
+
+class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
+    current = ItemSerializer(label="Current item's data", read_only=True)
+    previous = ItemSerializer(label="Previous item's data", read_only=True)
+
+    vote = NestedHyperlinkedIdentityField(
+        label="Voting URL",
+        read_only=True,
+        view_name="api:annotator-vote",
+        lookup_url_kwarg="pk",
+        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    )
+    skip = NestedHyperlinkedIdentityField(
+        label="Skipping URL",
+        read_only=True,
+        view_name="api:annotator-skip",
+        lookup_url_kwarg="pk",
+        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    )
+
+    def update(self, instance: Annotator, validated_data: Any) -> Annotator:
+        instance.ignore()
+        return instance
+
+    class Meta:
+        model = Annotator
+        fields = ["current", "previous", "vote", "skip"]
+        read_only_fields = ["current", "previous", "vote", "skip"]
+        select_related_fields = [
+            "current",
+            "current__survey",
+            "previous",
+            "previous__survey",
+        ]
+
+
+class VoteSerializer(IgnoreSerializer):
+    current_wins = serializers.BooleanField(
+        label="Whether the current item is the winner. Set to false if the previous is the winner",
+        write_only=True,
+    )
+
+    def update(self, instance: Annotator, validated_data: Any) -> Annotator:
+        instance.vote(**validated_data)
+        return instance
+
+    class Meta(IgnoreSerializer.Meta):
+        fields = IgnoreSerializer.Meta.fields + ["current_wins"]

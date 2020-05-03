@@ -25,6 +25,22 @@ class ItemSerializer(
         lookup_url_kwarg="pk",
     )
 
+    prioritize = NestedHyperlinkedIdentityField(
+        label="Prioritize URL",
+        read_only=True,
+        view_name="api:item-prioritize",
+        lookup_url_kwarg="pk",
+        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    )
+
+    deprioritize = NestedHyperlinkedIdentityField(
+        label="Deprioritize URL",
+        read_only=True,
+        view_name="api:item-deprioritize",
+        lookup_url_kwarg="pk",
+        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    )
+
     def create(self, validated_data: Any) -> Item:
         view = self.context["view"]
         survey_id = validated_data.get("survey", view.kwargs.get("survey_pk"))
@@ -38,6 +54,8 @@ class ItemSerializer(
         fields = [
             "url",
             "survey",
+            "prioritize",
+            "deprioritize",
             "name",
             "metadata",
             "active",
@@ -45,7 +63,15 @@ class ItemSerializer(
             "mu",
             "sigma_squared",
         ]
-        read_only_fields = ["mu", "sigma_squared", "survey", "active", "prioritized"]
+        read_only_fields = [
+            "mu",
+            "sigma_squared",
+            "survey",
+            "prioritize",
+            "deprioritize",
+            "active",
+            "prioritized",
+        ]
         select_related_fields = ["survey"]
 
 

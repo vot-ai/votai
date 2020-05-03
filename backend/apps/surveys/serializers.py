@@ -20,6 +20,13 @@ class SurveySerializer(
         lookup_url_kwarg="survey_pk",
     )
 
+    ranking = serializers.HyperlinkedIdentityField(
+        label="URL for the list of ranked items",
+        read_only=True,
+        view_name="api:item-ranking",
+        lookup_url_kwarg="survey_pk",
+    )
+
     annotators = serializers.HyperlinkedIdentityField(
         label="URL for a list of annotators belonging to this survey",
         read_only=True,
