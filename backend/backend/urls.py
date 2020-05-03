@@ -26,6 +26,7 @@ urlpatterns = [
     path("", include("django_prometheus.urls")),
     path("api-auth/", include("rest_framework.urls")),
     path("docs/", include("backend.docs_urls")),
+    path("auth/", include("dj_rest_auth.urls")),
 ]
 
 if settings.DEBUG:

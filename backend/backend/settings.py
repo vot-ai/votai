@@ -19,7 +19,7 @@ SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SETTINGS_DIR)
 
 # Get the docker secret
-django_secrets = read_env(os.environ.get("SECRETS_PATH"), "DJANGO_SECRETS")
+django_secrets = read_env(os.environ.get("SECRETS_PATH", ""), "DJANGO_SECRETS")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -185,10 +185,17 @@ SHELL_PLUS_SQLPARSE_FORMAT_KWARGS = dict(reindent_aligned=True, truncate_strings
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "dj_rest_auth.utils.JWTCookieAuthentication",
+    ),
     "PAGE_SIZE": 20,
 }
 
 REST_USE_JWT = True
+JWT_AUTH_COOKIE = "pairwise-jwt"
+LOGOUT_ON_PASSWORD_CHANGE = False
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
@@ -198,7 +205,7 @@ SIMPLE_JWT = {
 }
 
 DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda x: True,
+    "SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG is True,
     # Toolbar options
     "RESULTS_CACHE_SIZE": 3,
     "SHOW_COLLAPSED": True,
