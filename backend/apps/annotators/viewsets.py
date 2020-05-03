@@ -35,7 +35,11 @@ class SurveyAnnotatorViewset(
             return IgnoreSerializer
         return super().get_serializer_class()
 
-    @swagger_auto_schema(responses={400: "Request data is missing or contains errors, or Annotator/Survey are inactive"})
+    @swagger_auto_schema(
+        responses={
+            400: "Request data is missing or contains errors, or Annotator/Survey are inactive"
+        }
+    )
     @action(detail=True, methods=["post"])
     def vote(self, request, **kwargs):
         """Vote for an item
@@ -44,8 +48,10 @@ class SurveyAnnotatorViewset(
         """
         annotator = self.get_object()
         if not annotator.active:
-            raise InactiveAnnotatorError("Cannot vote because the annotator is inactive")
-        
+            raise InactiveAnnotatorError(
+                "Cannot vote because the annotator is inactive"
+            )
+
         if not annotator.survey.active:
             raise InactiveSurveyError("Cannot vote because the survey is inactive")
         return super().update(request, **kwargs)
@@ -59,8 +65,10 @@ class SurveyAnnotatorViewset(
         """
         annotator = self.get_object()
         if not annotator.active:
-            raise InactiveAnnotatorError("Cannot skip because the annotator is inactive")
-        
+            raise InactiveAnnotatorError(
+                "Cannot skip because the annotator is inactive"
+            )
+
         if not annotator.survey.active:
             raise InactiveSurveyError("Cannot skip because the survey is inactive")
         return super().update(request, **kwargs)

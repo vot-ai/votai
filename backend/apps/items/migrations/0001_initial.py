@@ -10,21 +10,39 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('surveys', '0001_initial'),
+        ("surveys", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Item',
+            name="Item",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
-                ('metadata', django.contrib.postgres.fields.jsonb.JSONField(default=dict)),
-                ('active', models.BooleanField(default=False)),
-                ('prioritized', models.BooleanField(default=False)),
-                ('mu', models.FloatField(default=0.0)),
-                ('sigma_squared', models.FloatField(default=1.0)),
-                ('survey', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='items', to='surveys.Survey')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
+                (
+                    "metadata",
+                    django.contrib.postgres.fields.jsonb.JSONField(default=dict),
+                ),
+                ("active", models.BooleanField(default=False)),
+                ("prioritized", models.BooleanField(default=False)),
+                ("mu", models.FloatField(default=0.0)),
+                ("sigma_squared", models.FloatField(default=1.0)),
+                (
+                    "survey",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="items",
+                        to="surveys.Survey",
+                    ),
+                ),
             ],
         ),
     ]

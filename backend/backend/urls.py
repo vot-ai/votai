@@ -22,16 +22,16 @@ from drf_yasg import openapi
 
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Pairwise Voting API",
-      default_version='v1',
-      description="API that implements voting systems",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="gustavomaronato@gmail.com"),
-      license=openapi.License(name="MIT License"),
-   ),
-   public=True,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Pairwise Voting API",
+        default_version="v1",
+        description="API that implements voting systems",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="gustavomaronato@gmail.com"),
+        license=openapi.License(name="MIT License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 
@@ -41,16 +41,15 @@ urlpatterns = [
     path("", include("backend.api_urls", namespace="api")),
     # Monitoring
     path("", include("django_prometheus.urls")),
-    path('api-auth/', include('rest_framework.urls')),
-    path('docs/', include('backend.docs_urls')),
+    path("api-auth/", include("rest_framework.urls")),
+    path("docs/", include("backend.docs_urls")),
 ]
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
 
+    urlpatterns = [
+        path("__debug__/", include(debug_toolbar.urls)),
         # For django versions before 2.0:
         # url(r'^__debug__/', include(debug_toolbar.urls)),
-
     ] + urlpatterns

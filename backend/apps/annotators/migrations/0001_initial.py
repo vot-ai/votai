@@ -10,25 +10,65 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('surveys', '0001_initial'),
-        ('items', '0001_initial'),
+        ("surveys", "0001_initial"),
+        ("items", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Annotator',
+            name="Annotator",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
-                ('metadata', django.contrib.postgres.fields.jsonb.JSONField(default=dict)),
-                ('active', models.BooleanField(default=True)),
-                ('alpha', models.FloatField(default=10)),
-                ('beta', models.FloatField(default=1)),
-                ('current', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='current_annotators', to='items.Item')),
-                ('ignored', models.ManyToManyField(related_name='ignored_by', to='items.Item')),
-                ('previous', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='previous_annotators', to='items.Item')),
-                ('survey', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='annotators', to='surveys.Survey')),
-                ('viewed', models.ManyToManyField(related_name='viewed_by', to='items.Item')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
+                (
+                    "metadata",
+                    django.contrib.postgres.fields.jsonb.JSONField(default=dict),
+                ),
+                ("active", models.BooleanField(default=True)),
+                ("alpha", models.FloatField(default=10)),
+                ("beta", models.FloatField(default=1)),
+                (
+                    "current",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="current_annotators",
+                        to="items.Item",
+                    ),
+                ),
+                (
+                    "ignored",
+                    models.ManyToManyField(related_name="ignored_by", to="items.Item"),
+                ),
+                (
+                    "previous",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="previous_annotators",
+                        to="items.Item",
+                    ),
+                ),
+                (
+                    "survey",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="annotators",
+                        to="surveys.Survey",
+                    ),
+                ),
+                (
+                    "viewed",
+                    models.ManyToManyField(related_name="viewed_by", to="items.Item"),
+                ),
             ],
         ),
     ]

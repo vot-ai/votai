@@ -30,9 +30,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
             return qs.filter(owner=self.request.user)
         return qs
 
-    @swagger_auto_schema(
-        responses={400: "Request data is missing or contains errors"}
-    )
+    @swagger_auto_schema(responses={400: "Request data is missing or contains errors"})
     def create(self, *args, **kwargs):
         """Create a new survey
         

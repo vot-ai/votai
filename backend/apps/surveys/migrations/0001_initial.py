@@ -16,20 +16,38 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Survey',
+            name="Survey",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
-                ('metadata', django.contrib.postgres.fields.jsonb.JSONField(default=dict)),
-                ('active', models.BooleanField(default=True)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('max_time', models.IntegerField(default=600)),
-                ('min_views', models.IntegerField(default=5)),
-                ('allow_concurrent', models.BooleanField(default=True)),
-                ('gamma', models.FloatField(default=5.0)),
-                ('epsilon', models.FloatField(default=0.25)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='surveys', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=30)),
+                (
+                    "metadata",
+                    django.contrib.postgres.fields.jsonb.JSONField(default=dict),
+                ),
+                ("active", models.BooleanField(default=True)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("max_time", models.IntegerField(default=600)),
+                ("min_views", models.IntegerField(default=5)),
+                ("allow_concurrent", models.BooleanField(default=True)),
+                ("gamma", models.FloatField(default=5.0)),
+                ("epsilon", models.FloatField(default=0.25)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="surveys",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

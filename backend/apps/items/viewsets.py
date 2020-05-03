@@ -9,7 +9,9 @@ from .serializers import ItemSerializer, PrioritizeSerializer, DeprioritizeSeria
 from .models import Item
 
 
-class SurveyItemViewset(PrefetchQuerysetModelMixin, QueryFieldsMixin, viewsets.ModelViewSet):
+class SurveyItemViewset(
+    PrefetchQuerysetModelMixin, QueryFieldsMixin, viewsets.ModelViewSet
+):
 
     swagger_tags = ["Items"]
 

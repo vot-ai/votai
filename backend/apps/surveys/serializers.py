@@ -3,9 +3,13 @@ from backend.mixins import PrefetchMixin, QueryFieldsMixin
 from .models import Survey
 
 
-class SurveySerializer(PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer):
+class SurveySerializer(
+    PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer
+):
 
-    url = serializers.HyperlinkedIdentityField(label="This resource's URL", view_name="api:survey-detail")
+    url = serializers.HyperlinkedIdentityField(
+        label="This resource's URL", view_name="api:survey-detail"
+    )
 
     items = serializers.HyperlinkedIdentityField(
         label="URL for a list of items belonging to this survey",
@@ -31,4 +35,4 @@ class SurveySerializer(PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedM
         model = Survey
         exclude = ["owner"]
         read_only_fields = ["created", "updated", "owner"]
-        select_related_fields = ['owner']
+        select_related_fields = ["owner"]
