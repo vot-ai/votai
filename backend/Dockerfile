@@ -20,6 +20,8 @@ WORKDIR /app
 ## add user
 RUN addgroup --system user && adduser --system --group user
 RUN chown -R user:user /app && chmod -R 755 /app
+RUN mkdir /prometheus_tmp
+RUN chown -R user:user /prometheus_tmp && chmod -R 755 /prometheus_tmp
 
 # Create venv
 RUN pip install -U setuptools pip

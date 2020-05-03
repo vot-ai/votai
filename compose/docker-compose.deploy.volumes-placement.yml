@@ -8,6 +8,9 @@ services:
       placement:
         constraints:
           - node.role == manager
+  backend:
+    volumes:
+      - prometheus_multiproc_dir:/prometheus_tmp
   prometheus:
     volumes:
       - prometheus_data:/prometheus
@@ -22,3 +25,4 @@ volumes:
   prometheus_data:
   grafana_data:
   portainer_data:
+  prometheus_multiproc_dir:

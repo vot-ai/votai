@@ -1,0 +1,5 @@
+from django_prometheus import middleware
+
+
+PrometheusBeforeMiddleware = middleware.PrometheusBeforeMiddleware
+PrometheusAfterMiddleware = middleware.PrometheusAfterMiddleware

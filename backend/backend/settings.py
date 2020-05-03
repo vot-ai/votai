@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # "django_prometheus",
+    "django_prometheus",
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -61,8 +61,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    # "django_prometheus.middleware.PrometheusBeforeMiddleware"
+    "backend.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -70,7 +71,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # "django_prometheus.middleware.PrometheusAfterMiddleware",
+    "backend.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -121,7 +122,9 @@ if os.environ.get("REDIS_URL"):
     # Cache backend
     CACHES = {
         "default": {
-            "BACKEND": "django_redis.cache.RedisCache",
+            "BACKEND": "django_redis.cache.RedisCache"
+            if DEBUG
+            else "django_prometheus.cache.backends.redis",
             "LOCATION": os.environ.get("REDIS_URL"),
             "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
             "KEY_PREFIX": "djangocache",
@@ -161,6 +164,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(SETTINGS_DIR, "staticfiles")
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Celery
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
