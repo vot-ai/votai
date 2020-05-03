@@ -1,4 +1,4 @@
-from .routers import SingleInstanceRetrieveRouter
+from .routers.single_instance import SingleInstanceRetrieveRouter
 
 base_router = SingleInstanceRetrieveRouter()
 

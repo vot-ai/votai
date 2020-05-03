@@ -1,5 +1,5 @@
-from apps.surveys.urls import base_router
-from backend.routers import SingleInstanceNestedRouter
+from backend.router import base_router
+from backend.routers.nested import SingleInstanceNestedRouter
 from backend.router import routers
 from .viewsets import SurveyItemViewset
 

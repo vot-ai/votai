@@ -1,6 +1,8 @@
+from typing import Any
 from rest_framework import serializers
 from rest_framework_nested.relations import NestedHyperlinkedIdentityField
-from backend.mixins import PrefetchMixin, QueryFieldsMixin
+from backend.mixins.prefetch import PrefetchMixin
+from backend.mixins.queryfields import QueryFieldsMixin
 from apps.surveys.models import Survey
 from .models import Item
 
@@ -23,12 +25,13 @@ class ItemSerializer(
         lookup_url_kwarg="pk",
     )
 
-    def create(self, validated_data):
+    def create(self, validated_data: Any) -> Item:
         view = self.context["view"]
         survey_id = validated_data.get("survey", view.kwargs.get("survey_pk"))
         if survey_id:
             validated_data["survey"] = Survey.objects.get(id=survey_id)
-        return Item.objects.create(**validated_data)
+        item: Item = Item.objects.create(**validated_data)
+        return item
 
     class Meta:
         model = Item
@@ -47,7 +50,7 @@ class ItemSerializer(
 
 
 class PrioritizeSerializer(ItemSerializer):
-    def update(self, instance: Item, validated_data):
+    def update(self, instance: Item, validated_data: Any) -> Item:
         instance.prioritize()
         return instance
 
@@ -56,6 +59,6 @@ class PrioritizeSerializer(ItemSerializer):
 
 
 class DeprioritizeSerializer(PrioritizeSerializer):
-    def update(self, instance: Item, validated_data):
+    def update(self, instance: Item, validated_data: Any) -> Item:
         instance.deprioritize()
         return instance

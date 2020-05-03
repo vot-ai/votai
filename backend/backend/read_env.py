@@ -1,19 +1,20 @@
 import os
 import re
+from typing import Any, Dict
 
 
 class EnvironmentVariables:
-    def __init__(self):
-        self._values = {}
+    def __init__(self) -> None:
+        self._values: Dict[str, Any] = {}
 
-    def set(self, key, value):
+    def set(self, key: str, value: Any) -> None:
         self._values[key] = value
 
-    def get(self, key, default=None):
+    def get(self, key: str, default: Any = None) -> Any:
         return self._values.get(key, default)
 
 
-def read_env(path, filename):
+def read_env(path: str, filename: str) -> EnvironmentVariables:
     """Pulled from Honcho code with minor updates, reads local default
     environment variables from an environment file
     """

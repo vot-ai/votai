@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import Any, List
 from rest_framework.routers import DefaultRouter, Route, DynamicRoute
 
 
@@ -49,7 +50,7 @@ class SingleInstanceRetrieveRouter(DefaultRouter):
     ]
 
     def get_routes(self, viewset):
-        baseroutes = self.routes
+        baseroutes: List[Any] = self.routes
         if getattr(viewset, "single_instance_viewset", False):
             baseroutes = list(self.routes)
             self.routes = list(self.single_instance_routes)

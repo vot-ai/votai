@@ -6,6 +6,10 @@ from .types import RelevanceScore, AnnotatorConfidence
 
 T = TypeVar("T")  # pylint: disable=invalid-name
 
+log: Callable[[float], float] = np.log
+typed_beta: Callable[[float, float], float] = beta
+typed_psi: Callable[[float], float] = psi
+
 
 def random_argmax(__func: Callable[[T], float], __iter: Sequence[T]) -> T:
     """Random Argmax
@@ -32,7 +36,7 @@ def gaussian_relative_entropy(score1: RelevanceScore, score2: RelevanceScore) ->
     """
     sigma_ratio = score1.sigma_squared / score2.sigma_squared
     return (score1.mu - score2.mu) ** 2 / (2 * score2.sigma_squared) + (
-        sigma_ratio - 1 - np.log(sigma_ratio)
+        sigma_ratio - 1 - log(sigma_ratio)
     ) / 2
 
 
@@ -44,8 +48,8 @@ def beta_relative_entropy(
     Relative Entropy utility function for beta distributions
     """
     return (
-        np.log(beta(*conf2) / beta(*conf1))
-        + (conf1.alpha - conf2.alpha) * psi(conf1.alpha)
-        + (conf1.beta - conf2.beta) * psi(conf1.beta)
-        + (conf2.alpha - conf1.alpha + conf2.beta - conf1.beta) * psi(sum(conf1))
+        log(typed_beta(*conf2) / typed_beta(*conf1))
+        + (conf1.alpha - conf2.alpha) * typed_psi(conf1.alpha)
+        + (conf1.beta - conf2.beta) * typed_psi(conf1.beta)
+        + (conf2.alpha - conf1.alpha + conf2.beta - conf1.beta) * typed_psi(sum(conf1))
     )

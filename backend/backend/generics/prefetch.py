@@ -1,5 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from ..mixins import PrefetchQuerysetModelMixin
+from ..mixins.prefetch import PrefetchQuerysetModelMixin
 
 
 class PrefetchListAPIView(PrefetchQuerysetModelMixin, ListAPIView):

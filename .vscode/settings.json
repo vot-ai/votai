@@ -1,8 +1,28 @@
 {
+  "editor.formatOnSave": true,
   "python.formatting.provider": "black",
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
   "python.pythonPath": "/Users/maronato/.pyenv/versions/pairwise-voting/bin/python",
   "editor.tabSize": 4,
-  "python.linting.mypyEnabled": true
+  "python.linting.mypyEnabled": true,
+  "python.linting.mypyArgs": [
+    "--ignore-missing-imports",
+    "--follow-imports=silent",
+    // Below are --strict enabled flags
+    "--warn-unused-configs",
+    "--disallow-any-generics",
+    // "--disallow-subclassing-any",
+    // "--disallow-untyped-calls",
+    "--disallow-untyped-defs",
+    "--disallow-incomplete-defs",
+    "--check-untyped-defs",
+    // "--disallow-untyped-decorators",
+    "--no-implicit-optional",
+    "--warn-redundant-casts",
+    "--warn-unused-ignores",
+    "--warn-return-any",
+    "--no-implicit-reexport",
+    "--strict-equality"
+  ]
 }

@@ -1,5 +1,7 @@
+from typing import Any
 from rest_framework import serializers
-from backend.mixins import PrefetchMixin, QueryFieldsMixin
+from backend.mixins.prefetch import PrefetchMixin
+from backend.mixins.queryfields import QueryFieldsMixin
 from .models import Survey
 
 
@@ -25,11 +27,12 @@ class SurveySerializer(
         lookup_url_kwarg="survey_pk",
     )
 
-    def create(self, validated_data):
+    def create(self, validated_data: Any) -> Survey:
         validated_data["owner"] = validated_data.get(
             "owner", self.context["request"].user
         )
-        return Survey.objects.create(**validated_data)
+        survey: Survey = Survey.objects.create(**validated_data)
+        return survey
 
     class Meta:
         model = Survey

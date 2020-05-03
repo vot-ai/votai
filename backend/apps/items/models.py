@@ -18,26 +18,26 @@ class Item(models.Model):
     sigma_squared: SigmaSquared = models.FloatField(default=SIGMA_SQUARED)
 
     @property
-    def score(self):
+    def score(self) -> RelevanceScore:
         return RelevanceScore(self.mu, self.sigma_squared)
 
-    def prioritize(self):
+    def prioritize(self) -> None:
         self.prioritized = True
         self.save()
 
-    def deprioritize(self):
+    def deprioritize(self) -> None:
         self.prioritized = False
         self.save()
 
-    def activate(self):
+    def activate(self) -> None:
         self.active = True
         self.save()
 
-    def deactivate(self):
+    def deactivate(self) -> None:
         self.active = False
         self.save()
 
-    def update_score(self, new_score: RelevanceScore):
+    def update_score(self, new_score: RelevanceScore) -> None:
         self.mu = new_score.mu  # pylint: disable=invalid-name
         self.sigma_squared = new_score.sigma_squared
         self.save()

@@ -13,7 +13,7 @@ if DEBUG and (os.environ.get("RUN_MAIN") or os.environ.get("WERKZEUG_RUN_MAIN"))
     print("vsc attachment enabled")
 
 
-def main():
+def main() -> None:
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
     try:
         from django.core.management import execute_from_command_line

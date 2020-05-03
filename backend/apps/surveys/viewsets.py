@@ -1,9 +1,12 @@
+from typing import Any
 from rest_framework import permissions, viewsets
+from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_condition import Or, And
-from backend.permissions import OwnsObject
-from backend.mixins import PrefetchQuerysetModelMixin
+from backend.permissions.ownership import OwnsObject
+from backend.mixins.prefetch import PrefetchQuerysetModelMixin
+from backend.custom_types.models import QueryType
 from .serializers import SurveySerializer
 from .models import Survey
 
@@ -24,14 +27,14 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     serializer_class = SurveySerializer
     queryset = Survey.objects.all()
 
-    def get_queryset(self):
-        qs = super().get_queryset()
+    def get_queryset(self) -> QueryType[Survey]:
+        qs: QueryType[Survey] = super().get_queryset()
         if not self.request.user.is_staff:
-            return qs.filter(owner=self.request.user)
+            qs = qs.filter(owner=self.request.user)
         return qs
 
     @swagger_auto_schema(responses={400: "Request data is missing or contains errors"})
-    def create(self, *args, **kwargs):
+    def create(self, *args: Any, **kwargs: Any) -> Response:
         """Create a new survey
 
         Creates a new survey under your user and returns its data
@@ -55,7 +58,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
             ),
         ],
     )
-    def retrieve(self, *args, **kwargs):
+    def retrieve(self, *args: Any, **kwargs: Any) -> Response:
         """Get details from a survey
 
         Returns data from a single survey that belongs to the user.
@@ -78,7 +81,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
             ),
         ],
     )
-    def list(self, *args, **kwargs):
+    def list(self, *args: Any, **kwargs: Any) -> Response:
         """List user's surveys
 
         Lists all of the user's surveys
@@ -91,7 +94,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
             400: "Request data is missing or contains errors",
         }
     )
-    def update(self, *args, **kwargs):
+    def update(self, *args: Any, **kwargs: Any) -> Response:
         """Update a survey
 
         Updates all fields of the survey
@@ -104,7 +107,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
             400: "Request data contains errors",
         }
     )
-    def partial_update(self, *args, **kwargs):
+    def partial_update(self, *args: Any, **kwargs: Any) -> Response:
         """Partially update a survey
 
         Updates some fields of the survey
@@ -114,7 +117,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     @swagger_auto_schema(
         responses={404: "Survey does not exist or you don't have access"}
     )
-    def destroy(self, *args, **kwargs):
+    def destroy(self, *args: Any, **kwargs: Any) -> Response:
         """Remove survey
 
         Deletes a survey and all of its related contents

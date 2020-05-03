@@ -1,9 +1,11 @@
+from typing import Any
 from rest_framework import serializers
 from rest_framework_nested.relations import (
     NestedHyperlinkedIdentityField,
     NestedHyperlinkedRelatedField,
 )
-from backend.mixins import PrefetchMixin, QueryFieldsMixin
+from backend.mixins.prefetch import PrefetchMixin
+from backend.mixins.queryfields import QueryFieldsMixin
 from apps.surveys.models import Survey
 from apps.items.serializers import ItemSerializer
 from .models import Annotator
@@ -13,7 +15,7 @@ class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
     current = ItemSerializer(label="Current item's data", read_only=True)
     previous = ItemSerializer(label="Previous item's data", read_only=True)
 
-    def update(self, instance: Annotator, validated_data):
+    def update(self, instance: Annotator, validated_data: Any) -> Annotator:
         instance.ignore()
         return instance
 
@@ -35,7 +37,7 @@ class VoteSerializer(IgnoreSerializer):
         write_only=True,
     )
 
-    def update(self, instance: Annotator, validated_data):
+    def update(self, instance: Annotator, validated_data: Any) -> Annotator:
         instance.vote(**validated_data)
         return instance
 
@@ -76,7 +78,7 @@ class AnnotatorSerializer(
         parent_lookup_kwargs={"survey_pk": "survey__pk"},
     )
 
-    def create(self, validated_data):
+    def create(self, validated_data: Any) -> Annotator:
         view = self.context["view"]
         survey_id = validated_data.get("survey", view.kwargs.get("survey_pk"))
         if survey_id:

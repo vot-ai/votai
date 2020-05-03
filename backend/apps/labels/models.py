@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from django.db import models
 from apps.surveys.models import Survey
 from apps.annotators.models import Annotator
@@ -10,7 +11,7 @@ class Label(models.Model):
     survey: Survey = models.ForeignKey(
         Survey, on_delete=models.CASCADE, related_name="labels"
     )
-    annotator: Annotator = models.ForeignKey(
+    annotator: Optional[Annotator] = models.ForeignKey(
         Annotator, on_delete=models.SET_NULL, related_name="labels", null=True
     )
     winner: Item = models.ForeignKey(
@@ -21,7 +22,7 @@ class Label(models.Model):
     )
 
     @classmethod
-    def create_label(cls, annotator: Annotator, winner: Item, loser: Item):
+    def create_label(cls, annotator: Annotator, winner: Item, loser: Item) -> "Label":
         label = cls(
             survey=annotator.survey, annotator=annotator, winner=winner, loser=loser
         )
