@@ -55,10 +55,7 @@ class Annotator(models.Model):
         loser.update_score(new_loser_score)
 
     def choose_next(self) -> Optional[Item]:
-        # Get all items and filter inactive if survey does not allow concurrent
-        items: QueryType[Item] = self.survey.items.all()
-        if not self.survey.allow_concurrent:
-            items = items.filter(active=False)
+        items: QueryType[Item] = self.survey.items.filter(active=False)
 
         available: QueryType[Item] = items.exclude(
             id__in=self.ignored.only("id")
@@ -116,9 +113,10 @@ class Annotator(models.Model):
         return self.update_items()
 
     def update_items(self) -> Optional[Item]:
+        survey = self.survey
         next_item = self.choose_next()
 
-        if self.survey.allow_concurrent and self.current is not None:
+        if self.current is not None and not survey.allow_concurrent:
             self.current.deactivate()
 
         self.previous = self.current
@@ -126,8 +124,9 @@ class Annotator(models.Model):
         self.save()
 
         if self.current is not None:
-            if self.survey.allow_concurrent:
+            if not survey.allow_concurrent:
                 self.current.activate()
+                self.current.schedule_deactivate(survey.max_time)
             self.current.deprioritize()
             self.viewed.add(self.current)
         return self.current

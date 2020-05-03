@@ -70,10 +70,10 @@ FROM ${APP_ENV}-prefinal as final
 COPY --from=cleanup /opt/venv /opt/venv
 
 # Prepare entrypoint
-COPY worker-entrypoint.sh docker-entrypoint.sh
-RUN chmod a+x docker-entrypoint.sh
+COPY worker-entrypoint.sh worker-entrypoint.sh
+RUN chmod a+x worker-entrypoint.sh
 
 ## switch to non-root user
 USER user
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["./worker-entrypoint.sh"]
