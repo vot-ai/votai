@@ -1,7 +1,5 @@
 from rest_framework import permissions
 
-from rest_framework.generics import GenericAPIView
-
 
 class OwnsObject(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -23,10 +21,10 @@ class OwnsObject(permissions.BasePermission):
         filter_kwargs = {view.lookup_field: view.kwargs[lookup_url_kwarg]}
         ownership_field = view.ownership_field
         prefetch_field = "__".join(ownership_field.split("."))
-        obj_qs = (
-            queryset.filter(**filter_kwargs)
-            .select_related(prefetch_field)
-        )
+        try:
+            obj_qs = queryset.filter(**filter_kwargs).select_related(prefetch_field)
+        except ValueError:
+            return False
         user_relation = getattr(view, "user_relation", "user")
         obj_field = obj_qs.first()
         for field in ownership_field.split("."):
