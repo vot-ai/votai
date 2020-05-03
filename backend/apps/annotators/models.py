@@ -5,11 +5,11 @@ from django.contrib.postgres.fields import JSONField
 from apps.items.models import Item
 from apps.surveys.models import Survey
 from backend.custom_types.models import QueryType
-from crowd_bt.types import Alpha, Beta, AnnotatorConfidence
-from crowd_bt.constants import ALPHA, BETA
-from crowd_bt.entropy import expected_information_gain
-from crowd_bt.utils import random_argmax
-from crowd_bt.online import update_scores, update_annotator
+from apps.crowd_bt.types import Alpha, Beta, AnnotatorConfidence
+from apps.crowd_bt.constants import ALPHA, BETA
+from apps.crowd_bt.entropy import expected_information_gain
+from apps.crowd_bt.utils import random_argmax
+from apps.crowd_bt.online import update_scores, update_annotator
 
 
 class Annotator(models.Model):

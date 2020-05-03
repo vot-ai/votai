@@ -1,7 +1,7 @@
 import itertools
 import unittest
-from crowd_bt import utils, online, entropy
-from crowd_bt.types import (
+from apps.crowd_bt import utils, online, entropy
+from apps.crowd_bt.types import (
     RelevanceScore,
     AnnotatorConfidence,
     Mu,

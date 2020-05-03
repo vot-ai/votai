@@ -37,3 +37,6 @@ scipy==1.4.1
 black==19.10b0
 pylint==2.5.0
 pylint-django==2.0.15
+
+# Testing
+coverage==5.1

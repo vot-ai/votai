@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 from apps.surveys.models import Survey
-from crowd_bt.constants import MU, SIGMA_SQUARED
-from crowd_bt.types import Mu, SigmaSquared, RelevanceScore
+from apps.crowd_bt.constants import MU, SIGMA_SQUARED
+from apps.crowd_bt.types import Mu, SigmaSquared, RelevanceScore
 from .tasks import auto_deactivate
 
 

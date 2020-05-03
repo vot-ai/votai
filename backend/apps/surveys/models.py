@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
-from crowd_bt.constants import GAMMA, EPSILON
+from apps.crowd_bt.constants import GAMMA, EPSILON
 
 
 user_model = get_user_model()
