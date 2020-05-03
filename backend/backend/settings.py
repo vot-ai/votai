@@ -30,9 +30,9 @@ SECRET_KEY = django_secrets.get("SECRET_KEY", "abc123")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").capitalize() == "True"
 
-ALLOWED_HOSTS = eval(
+ALLOWED_HOSTS = eval(  # pylint: disable=eval-used
     os.environ.get("ALLOWED_HOSTS", '["localhost", "backend"]')
-)  # pylint: disable=eval-used
+)
 
 # Website root url
 ROOT_URL = django_secrets.get("ROOT_URL", "http://api.localhost")

@@ -38,6 +38,6 @@ class Item(models.Model):
         self.save()
 
     def update_score(self, new_score: RelevanceScore):
-        self.mu = new_score.mu
+        self.mu = new_score.mu  # pylint: disable=invalid-name
         self.sigma_squared = new_score.sigma_squared
         self.save()

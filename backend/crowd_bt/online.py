@@ -144,7 +144,7 @@ def update_annotator(
         / (exp_winner_mu + exp_loser_mu) ** 3
     )
     c_2 = 1 - c_1
-    c = C((c_1 * alpha + c_2 * beta) / sum(annotator))
+    c = C((c_1 * alpha + c_2 * beta) / sum(annotator))  # pylint: disable=invalid-name
 
     # Cache expectations
     expectation = (c_1 * (alpha + 1) * alpha + c_2 * alpha * beta) / (

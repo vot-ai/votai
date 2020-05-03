@@ -7,7 +7,7 @@ from typing import NewType, NamedTuple
 Given a relevance score (s), its Gaussian-distributed format is given by:
 s ~ N(μ, σ²)
 """
-Mu = NewType("μ", float)
+Mu = NewType("Mu", float)
 
 
 """Sigma Squared
@@ -15,7 +15,30 @@ Mu = NewType("μ", float)
 Given a relevance score (s), its Gaussian-distributed format is given by:
 s ~ N(μ, σ²)
 """
-SigmaSquared = NewType("σ²", float)
+SigmaSquared = NewType("SigmaSquared", float)
+
+
+"""Alpha
+
+Given the probability that the annotator agrees with the true pairwise preferences(η),
+we assume it to be a Beta-distributed random variable with parameters α and β:
+η ∼ Beta(α, β)
+"""
+Alpha = NewType("Alpha", float)
+
+"""Beta
+
+Given the probability that the annotator agrees with the true pairwise preferences(η),
+we assume it to be a Beta-distributed random variable with parameters α and β:
+η ∼ Beta(α, β)
+"""
+Beta = NewType("Beta", float)
+
+"""Normalization Constant
+
+Normalization constant used to regulate the expected information gain.
+"""
+C = NewType("C", float)  # pylint: disable=invalid-name
 
 
 class RelevanceScore(NamedTuple):
@@ -32,11 +55,6 @@ class RelevanceScore(NamedTuple):
     sigma_squared: SigmaSquared
 
 
-Alpha = NewType("α", float)
-
-Beta = NewType("β", float)
-
-
 class AnnotatorConfidence(NamedTuple):
     """Annotator Confidence (η)
 
@@ -49,6 +67,3 @@ class AnnotatorConfidence(NamedTuple):
 
     alpha: Alpha
     beta: Beta
-
-
-C = NewType("Normalization Constant", float)

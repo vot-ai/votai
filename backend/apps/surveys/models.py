@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import JSONField
 from crowd_bt.constants import GAMMA, EPSILON
 
@@ -14,7 +15,7 @@ class Survey(models.Model):
     active: bool = models.BooleanField(default=True)
     created: datetime = models.DateTimeField(auto_now_add=True)
     updated: datetime = models.DateTimeField(auto_now=True)
-    owner: user_model = models.ForeignKey(
+    owner: AbstractUser = models.ForeignKey(
         user_model, on_delete=models.CASCADE, related_name="surveys"
     )
 

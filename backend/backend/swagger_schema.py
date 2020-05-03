@@ -97,8 +97,9 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
             "Accept": self.get_produces()[0],
         }
         url = unquote_plus(
+            # pylint: disable=protected-access
             self.request._request.build_absolute_uri(self.path)
-        )  # pylint: disable=protected-access
+        )
         if "https" not in url:
             url = url.replace("http", "https")
         template_context = {
