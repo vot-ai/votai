@@ -23,5 +23,8 @@ class Survey(models.Model):
     min_views: int = models.PositiveSmallIntegerField(default=5)
     allow_concurrent: bool = models.BooleanField(default=True)
 
+    max_annotators: int = models.PositiveIntegerField(default=50)
+    max_items: int = models.PositiveIntegerField(default=100)
+
     gamma: float = models.FloatField(default=GAMMA)
     epsilon: float = models.FloatField(default=EPSILON)

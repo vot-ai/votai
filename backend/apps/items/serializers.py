@@ -5,6 +5,7 @@ from backend.mixins.prefetch import PrefetchMixin
 from backend.mixins.queryfields import QueryFieldsMixin
 from apps.surveys.models import Survey
 from .models import Item
+from .exceptions import ItemsQuotaError
 
 
 class ItemSerializer(
@@ -43,9 +44,11 @@ class ItemSerializer(
 
     def create(self, validated_data: Any) -> Item:
         view = self.context["view"]
-        survey_id = validated_data.get("survey", view.kwargs.get("survey_pk"))
-        if survey_id:
-            validated_data["survey"] = Survey.objects.get(id=survey_id)
+        survey_id: int = validated_data.get("survey", view.kwargs.get("survey_pk"))
+        survey: Survey = Survey.objects.get(id=survey_id)
+        if survey.max_items > 0 and survey.max_items <= survey.items.count():
+            raise ItemsQuotaError()
+        validated_data["survey"] = survey
         item: Item = Item.objects.create(**validated_data)
         return item
 

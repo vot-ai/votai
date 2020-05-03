@@ -9,6 +9,7 @@ from backend.mixins.queryfields import QueryFieldsMixin
 from apps.surveys.models import Survey
 from apps.items.serializers import ItemSerializer
 from .models import Annotator
+from .exceptions import AnnotatorsQuotaError
 
 
 class AnnotatorSerializer(
@@ -61,9 +62,14 @@ class AnnotatorSerializer(
 
     def create(self, validated_data: Any) -> Annotator:
         view = self.context["view"]
-        survey_id = validated_data.get("survey", view.kwargs.get("survey_pk"))
-        if survey_id:
-            validated_data["survey"] = Survey.objects.get(id=survey_id)
+        survey_id: int = validated_data.get("survey", view.kwargs.get("survey_pk"))
+        survey: Survey = Survey.objects.get(id=survey_id)
+        if (
+            survey.max_annotators > 0
+            and survey.max_annotators <= survey.annotators.count()
+        ):
+            raise AnnotatorsQuotaError()
+        validated_data["survey"] = survey
         return Annotator.create_annotator(**validated_data)
 
     class Meta:

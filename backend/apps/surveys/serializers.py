@@ -44,5 +44,5 @@ class SurveySerializer(
     class Meta:
         model = Survey
         exclude = ["owner"]
-        read_only_fields = ["created", "updated", "owner"]
+        read_only_fields = ["created", "updated", "max_annotators", "max_items"]
         select_related_fields = ["owner"]
