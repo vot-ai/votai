@@ -1,10 +1,10 @@
 from typing import Callable, Sequence, TypeVar
 from random import sample
 import numpy as np
-from scipy.special import psi, beta
+from scipy.special import psi, beta  # pylint: disable=no-name-in-module
 from .types import RelevanceScore, AnnotatorConfidence
 
-T = TypeVar("T")
+T = TypeVar("T")  # pylint: disable=invalid-name
 
 
 def random_argmax(__func: Callable[[T], float], __iter: Sequence[T]) -> T:

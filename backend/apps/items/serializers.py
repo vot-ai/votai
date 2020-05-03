@@ -47,9 +47,6 @@ class ItemSerializer(
 
 
 class PrioritizeSerializer(ItemSerializer):
-    def create(self, validated_data):
-        raise NotImplementedError("Creation is not allowed")
-
     def update(self, instance: Item, validated_data):
         instance.prioritize()
         return instance

@@ -30,7 +30,9 @@ SECRET_KEY = django_secrets.get("SECRET_KEY", "abc123")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False").capitalize() == "True"
 
-ALLOWED_HOSTS = eval(os.environ.get("ALLOWED_HOSTS", '["localhost", "backend"]'))
+ALLOWED_HOSTS = eval(
+    os.environ.get("ALLOWED_HOSTS", '["localhost", "backend"]')
+)  # pylint: disable=eval-used
 
 # Website root url
 ROOT_URL = django_secrets.get("ROOT_URL", "http://api.localhost")
@@ -183,7 +185,6 @@ SHELL_PLUS_SQLPARSE_FORMAT_KWARGS = dict(reindent_aligned=True, truncate_strings
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 20,
 }
 

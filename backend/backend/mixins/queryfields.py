@@ -31,9 +31,9 @@ class QueryFieldsMixin(object):
 
     def get_field_name_as_child(self):
         """Returns the field name of the serializer as declared on the parent"""
-        for k, v in self.get_parent().fields.items():
-            if v is self:
-                return k
+        for key, value in self.get_parent().fields.items():
+            if value is self:
+                return key
 
     def get_query_params(self, request):
         """Returns the query parameters from the request"""
@@ -55,7 +55,7 @@ class QueryFieldsMixin(object):
         query = re.sub(r'",', r'":{},', query)
         query = re.sub(r'"}', r'":{}}', query)
         try:
-            result = eval(query)
+            result = eval(query)  # pylint: disable=eval-used
         except SyntaxError:
             raise serializers.ValidationError("Malformed query")
         return result

@@ -2,7 +2,7 @@ import os
 import re
 
 
-class EnvironmentVariables(object):
+class EnvironmentVariables:
     def __init__(self):
         self._values = {}
 
@@ -28,15 +28,15 @@ def read_env(path, filename):
     environment_variables = EnvironmentVariables()
 
     for line in content.splitlines():
-        m1 = re.match(r"\A([A-Za-z_0-9]+)=(.*)\Z", line)
-        if m1:
-            key, val = m1.group(1), m1.group(2)
-            m2 = re.match(r"\A'(.*)'\Z", val)
-            if m2:
-                val = m2.group(1)
-            m3 = re.match(r'\A"(.*)"\Z', val)
-            if m3:
-                val = re.sub(r"\\(.)", r"\1", m3.group(1))
+        match_1 = re.match(r"\A([A-Za-z_0-9]+)=(.*)\Z", line)
+        if match_1:
+            key, val = match_1.group(1), match_1.group(2)
+            match_2 = re.match(r"\A'(.*)'\Z", val)
+            if match_2:
+                val = match_2.group(1)
+            match_3 = re.match(r'\A"(.*)"\Z', val)
+            if match_3:
+                val = re.sub(r"\\(.)", r"\1", match_3.group(1))
             if val.strip() != "":
                 environment_variables.set(key, val.strip())
 

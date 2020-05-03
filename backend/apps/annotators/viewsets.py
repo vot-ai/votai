@@ -1,12 +1,11 @@
-from rest_framework import permissions, viewsets, exceptions
-from rest_condition import And
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
+from rest_condition import And
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from backend.permissions import OwnsObject
 from backend.mixins import PrefetchQuerysetModelMixin, QueryFieldsMixin
 from apps.surveys.exceptions import InactiveSurveyError
-from apps.surveys.models import Survey
 from .exceptions import InactiveAnnotatorError
 from .serializers import AnnotatorSerializer, VoteSerializer, IgnoreSerializer
 from .models import Annotator
@@ -76,7 +75,7 @@ class SurveyAnnotatorViewset(
     @swagger_auto_schema(responses={400: "Request data is missing or contains errors"})
     def create(self, *args, **kwargs):
         """Create a new annotator
-        
+
         Creates a new annotator under the provided survey
         """
         return super().create(*args, **kwargs)
@@ -100,7 +99,7 @@ class SurveyAnnotatorViewset(
     )
     def retrieve(self, *args, **kwargs):
         """Get details from an annotator
-        
+
         Returns data from a single annotator that belongs to the survey.
         """
         return super().retrieve(*args, **kwargs)
@@ -123,7 +122,7 @@ class SurveyAnnotatorViewset(
     )
     def list(self, *args, **kwargs):
         """List surveys's annotators
-        
+
         Lists all of the survey's annotators
         """
         return super().list(*args, **kwargs)
@@ -136,7 +135,7 @@ class SurveyAnnotatorViewset(
     )
     def update(self, *args, **kwargs):
         """Update an annotator
-        
+
         Updates all fields of the annotator
         """
         return super().update(*args, **kwargs)
@@ -149,7 +148,7 @@ class SurveyAnnotatorViewset(
     )
     def partial_update(self, *args, **kwargs):
         """Partially update an annotator
-        
+
         Updates some fields of the annotator
         """
         return super().partial_update(*args, **kwargs)
@@ -159,7 +158,7 @@ class SurveyAnnotatorViewset(
     )
     def destroy(self, *args, **kwargs):
         """Remove annotator
-        
+
         Deletes an annotator and all of its related contents
         """
         return super().destroy(*args, **kwargs)

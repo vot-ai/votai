@@ -20,5 +20,3 @@ class SingleInstanceNestedRouter(NestedMixin, SingleInstanceRetrieveRouter):
         on 'pk' so the parent lookup regex will be 'domain_pk'.
         Default: 'nested_<n>' where <n> is 1+parent_router.nest_count
     """
-
-    pass

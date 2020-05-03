@@ -2,7 +2,6 @@ from collections import OrderedDict
 from urllib.parse import urlencode, unquote_plus
 from django.utils import timezone
 from django.utils.crypto import get_random_string
-from django.conf import settings
 from django.template.loader import render_to_string
 from drf_yasg.inspectors.view import SwaggerAutoSchema, force_real_str
 from drf_yasg.generators import OpenAPISchemaGenerator
@@ -58,7 +57,7 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
         else:
             return maximum
 
-    def process_bool_parameter(self, parameter):
+    def process_bool_parameter(self, _parameter):
         return True
 
     def generate_example_value(self, parameter):
@@ -97,7 +96,9 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
             "Authorization": f"Bearer {get_random_string(30)}",
             "Accept": self.get_produces()[0],
         }
-        url = unquote_plus(self.request._request.build_absolute_uri(self.path))
+        url = unquote_plus(
+            self.request._request.build_absolute_uri(self.path)
+        )  # pylint: disable=protected-access
         if "https" not in url:
             url = url.replace("http", "https")
         template_context = {
@@ -133,7 +134,7 @@ class XCodeSampleAutoSchema(SwaggerAutoSchema):
         setattr(operation, "x-code-samples", self.get_x_code_samples())
         return operation
 
-    def get_operation(self, operation_keys):
+    def get_operation(self, operation_keys=None):
         consumes = self.get_consumes()
         produces = self.get_produces()
 
@@ -174,15 +175,15 @@ class CustomTagAutoSchema(XCodeSampleAutoSchema):
     If none is found, fallback to default behavior
     """
 
-    def get_tags(self, operation_keys):
+    def get_tags(self, operation_keys=None):
         if getattr(self.view, "swagger_tags", None):
             return self.view.swagger_tags
         return super().get_tags(operation_keys)
 
 
 class TaggedDescriptionSchemaGenerator(OpenAPISchemaGenerator):
-    def get_schema(self, *args, **kwargs):
-        swagger = super().get_schema(*args, **kwargs)
+    def get_schema(self, request=None, public=False):
+        swagger = super().get_schema(request, public)
         tags = {
             tag
             for path in swagger.paths.items()

@@ -1,5 +1,8 @@
-import os, shutil
+import os
+import shutil
 from prometheus_client import multiprocess
+
+# pylint: disable=invalid-name
 
 # Sample Gunicorn configuration file.
 
@@ -206,7 +209,7 @@ def post_fork(server, worker):
     server.log.info("Worker spawned (pid: %s)", worker.pid)
 
 
-def pre_fork(server, worker):
+def pre_fork(_server, _worker):
     pass
 
 
@@ -222,12 +225,17 @@ def worker_int(worker):
     worker.log.info("worker received INT or QUIT signal")
 
     ## get traceback info
-    import threading, sys, traceback
+    import threading
+    import sys
+    import traceback
 
     id2name = {th.ident: th.name for th in threading.enumerate()}
     code = []
-    for threadId, stack in sys._current_frames().items():
-        code.append("\n# Thread: %s(%d)" % (id2name.get(threadId, ""), threadId))
+    for (
+        thread_id,
+        stack,
+    ) in sys._current_frames().items():  # pylint: disable=protected-access
+        code.append("\n# Thread: %s(%d)" % (id2name.get(thread_id, ""), thread_id))
         for filename, lineno, name, line in traceback.extract_stack(stack):
             code.append('File: "%s", line %d, in %s' % (filename, lineno, name))
             if line:
@@ -239,5 +247,5 @@ def worker_abort(worker):
     worker.log.info("worker received SIGABRT signal")
 
 
-def child_exit(server, worker):
+def child_exit(_server, worker):
     multiprocess.mark_process_dead(worker.pid)

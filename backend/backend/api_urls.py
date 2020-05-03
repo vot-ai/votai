@@ -1,7 +1,7 @@
 from .router import routers
-import apps.surveys.urls
-import apps.items.urls
-import apps.annotators.urls
+import apps.surveys.urls  # pylint: disable=unused-import, wrong-import-order
+import apps.items.urls  # pylint: disable=unused-import, wrong-import-order
+import apps.annotators.urls  # pylint: disable=unused-import, wrong-import-order
 
 
 app_name = "api"

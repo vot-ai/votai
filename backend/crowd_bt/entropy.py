@@ -1,4 +1,4 @@
-from .types import AnnotatorConfidence, Mu, RelevanceScore
+from .types import AnnotatorConfidence, RelevanceScore
 from .utils import gaussian_relative_entropy, beta_relative_entropy
 from .online import update_annotator, update_scores
 from .constants import GAMMA

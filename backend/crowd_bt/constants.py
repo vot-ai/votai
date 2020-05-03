@@ -1,6 +1,6 @@
 from typing import Final
 
-
+# pylint: disable=pointless-string-statement
 """Kappa (κ)
 
 Used by equation (13) and (14)

@@ -62,7 +62,7 @@ class SurveyItemViewset(
     @swagger_auto_schema(responses={400: "Request data is missing or contains errors"})
     def create(self, *args, **kwargs):
         """Create a new item
-        
+
         Creates a new item under the provided survey
         """
         return super().create(*args, **kwargs)
@@ -86,7 +86,7 @@ class SurveyItemViewset(
     )
     def retrieve(self, *args, **kwargs):
         """Get details from an item
-        
+
         Returns data from a single item that belongs to the survey.
         """
         return super().retrieve(*args, **kwargs)
@@ -109,7 +109,7 @@ class SurveyItemViewset(
     )
     def list(self, *args, **kwargs):
         """List surveys's items
-        
+
         Lists all of the survey's items
         """
         return super().list(*args, **kwargs)
@@ -122,7 +122,7 @@ class SurveyItemViewset(
     )
     def update(self, *args, **kwargs):
         """Update an item
-        
+
         Updates all fields of the item
         """
         return super().update(*args, **kwargs)
@@ -135,7 +135,7 @@ class SurveyItemViewset(
     )
     def partial_update(self, *args, **kwargs):
         """Partially update an item
-        
+
         Updates some fields of the item
         """
         return super().partial_update(*args, **kwargs)
@@ -145,7 +145,7 @@ class SurveyItemViewset(
     )
     def destroy(self, *args, **kwargs):
         """Remove item
-        
+
         Deletes an item and all of its related contents
         """
         return super().destroy(*args, **kwargs)

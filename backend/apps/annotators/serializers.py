@@ -13,9 +13,6 @@ class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
     current = ItemSerializer(label="Current item's data", read_only=True)
     previous = ItemSerializer(label="Previous item's data", read_only=True)
 
-    def create(self, validated_data):
-        raise NotImplementedError("Creation is not allowed")
-
     def update(self, instance: Annotator, validated_data):
         instance.ignore()
         return instance

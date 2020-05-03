@@ -1,9 +1,9 @@
 from rest_framework import permissions, viewsets
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_condition import Or, And
 from backend.permissions import OwnsObject
 from backend.mixins import PrefetchQuerysetModelMixin
-from rest_condition import Or, And
 from .serializers import SurveySerializer
 from .models import Survey
 
@@ -33,7 +33,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     @swagger_auto_schema(responses={400: "Request data is missing or contains errors"})
     def create(self, *args, **kwargs):
         """Create a new survey
-        
+
         Creates a new survey under your user and returns its data
         """
         return super().create(*args, **kwargs)
@@ -57,7 +57,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     )
     def retrieve(self, *args, **kwargs):
         """Get details from a survey
-        
+
         Returns data from a single survey that belongs to the user.
         """
         return super().retrieve(*args, **kwargs)
@@ -80,7 +80,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     )
     def list(self, *args, **kwargs):
         """List user's surveys
-        
+
         Lists all of the user's surveys
         """
         return super().list(*args, **kwargs)
@@ -93,7 +93,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     )
     def update(self, *args, **kwargs):
         """Update a survey
-        
+
         Updates all fields of the survey
         """
         return super().update(*args, **kwargs)
@@ -106,7 +106,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     )
     def partial_update(self, *args, **kwargs):
         """Partially update a survey
-        
+
         Updates some fields of the survey
         """
         return super().partial_update(*args, **kwargs)
@@ -116,7 +116,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     )
     def destroy(self, *args, **kwargs):
         """Remove survey
-        
+
         Deletes a survey and all of its related contents
         """
         return super().destroy(*args, **kwargs)

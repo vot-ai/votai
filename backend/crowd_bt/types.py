@@ -1,6 +1,7 @@
 from typing import NewType, NamedTuple
 
 
+# pylint: disable=pointless-string-statement
 """Mu
 
 Given a relevance score (s), its Gaussian-distributed format is given by:
@@ -21,7 +22,7 @@ class RelevanceScore(NamedTuple):
     """Relevance Score (s)
 
     Score that evaluates how relevant an item is according to annotators
-    
+
     Represented as a Gaussian-distributed random variable with parameters μ and σ²
     such that:
         s ~ N(μ, σ²)
