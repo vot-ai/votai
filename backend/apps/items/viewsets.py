@@ -20,6 +20,9 @@ class SurveyItemViewset(
 
     swagger_tags = ["Items"]
 
+    lookup_field = "uuid"
+    lookup_url_kwarg = "id"
+
     permission_classes = [And(permissions.IsAuthenticated, OwnsObject)]
     ownership_field = "survey.owner"
 
@@ -27,8 +30,8 @@ class SurveyItemViewset(
     queryset = Item.objects.all()
 
     def get_queryset(self) -> QueryType[Item]:
-        survey_pk = self.kwargs.get("survey_pk")
-        qs: QueryType[Item] = super().get_queryset().filter(survey=survey_pk)
+        survey_id = self.kwargs.get("survey_id")
+        qs: QueryType[Item] = super().get_queryset().filter(survey__uuid=survey_id)
         if self.action == "ranking":
             qs = qs.order_by("-mu")
         return qs

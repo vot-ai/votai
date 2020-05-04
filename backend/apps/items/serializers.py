@@ -1,9 +1,13 @@
 from typing import Any
 from rest_framework import serializers
-from rest_framework_nested.relations import NestedHyperlinkedIdentityField
 from backend.mixins.prefetch import PrefetchMixin
 from backend.mixins.queryfields import QueryFieldsMixin
+from backend.fields import SelfUUIDField, NestedURLField
 from apps.surveys.models import Survey
+from apps.surveys.fields import (
+    SurveyURL,
+    SurveyHyperlinkedIdentityField,
+)
 from .models import Item
 from .exceptions import ItemsQuotaError
 
@@ -12,40 +16,23 @@ class ItemSerializer(
     PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer
 ):
 
-    url = NestedHyperlinkedIdentityField(
-        label="This resource's URL",
-        view_name="api:item-detail",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    id = SelfUUIDField()
+    url = NestedURLField(view_name="api:item-detail")
+
+    survey = SurveyURL()
+
+    prioritize = SurveyHyperlinkedIdentityField(
+        label="Prioritize URL", view_name="api:item-prioritize",
     )
 
-    survey = serializers.HyperlinkedRelatedField(
-        label="Parent survey's URL",
-        read_only=True,
-        view_name="api:survey-detail",
-        lookup_url_kwarg="pk",
-    )
-
-    prioritize = NestedHyperlinkedIdentityField(
-        label="Prioritize URL",
-        read_only=True,
-        view_name="api:item-prioritize",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
-    )
-
-    deprioritize = NestedHyperlinkedIdentityField(
-        label="Deprioritize URL",
-        read_only=True,
-        view_name="api:item-deprioritize",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    deprioritize = SurveyHyperlinkedIdentityField(
+        label="Deprioritize URL", view_name="api:item-deprioritize",
     )
 
     def create(self, validated_data: Any) -> Item:
         view = self.context["view"]
-        survey_id: int = validated_data.get("survey", view.kwargs.get("survey_pk"))
-        survey: Survey = Survey.objects.get(id=survey_id)
+        survey_id: int = validated_data.get("survey", view.kwargs.get("survey_id"))
+        survey: Survey = Survey.objects.get(uuid=survey_id)
         if survey.max_items > 0 and survey.max_items <= survey.items.count():
             raise ItemsQuotaError()
         validated_data["survey"] = survey
@@ -55,6 +42,7 @@ class ItemSerializer(
     class Meta:
         model = Item
         fields = [
+            "id",
             "url",
             "survey",
             "prioritize",
@@ -67,6 +55,7 @@ class ItemSerializer(
             "sigma_squared",
         ]
         read_only_fields = [
+            "id",
             "mu",
             "sigma_squared",
             "survey",

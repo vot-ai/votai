@@ -21,6 +21,9 @@ class SurveyAnnotatorViewset(
 ):
     swagger_tags = ["Annotator"]
 
+    lookup_field = "uuid"
+    lookup_url_kwarg = "id"
+
     permission_classes = [And(permissions.IsAuthenticated, OwnsObject)]
     ownership_field = "survey.owner"
 
@@ -28,8 +31,10 @@ class SurveyAnnotatorViewset(
     queryset = Annotator.objects.all()
 
     def get_queryset(self) -> QueryType[Annotator]:
-        survey_pk = self.kwargs.get("survey_pk")
-        qs: QueryType[Annotator] = super().get_queryset().filter(survey=survey_pk)
+        survey_uuid = self.kwargs.get("survey_id")
+        qs: QueryType[Annotator] = super().get_queryset().filter(
+            survey__uuid=survey_uuid
+        )
         return qs
 
     def get_serializer_class(self) -> Any:

@@ -19,6 +19,9 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
 
     swagger_tags = ["Survey"]
 
+    lookup_field = "uuid"
+    lookup_url_kwarg = "id"
+
     permission_classes = [
         And(permissions.IsAuthenticated, Or(permissions.IsAdminUser, OwnsObject))
     ]

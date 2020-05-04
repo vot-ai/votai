@@ -1,12 +1,14 @@
 from typing import Any
 from rest_framework import serializers
-from rest_framework_nested.relations import (
-    NestedHyperlinkedIdentityField,
-    NestedHyperlinkedRelatedField,
-)
 from backend.mixins.prefetch import PrefetchMixin
 from backend.mixins.queryfields import QueryFieldsMixin
+from backend.fields import SelfUUIDField, NestedURLField
 from apps.surveys.models import Survey
+from apps.surveys.fields import (
+    SurveyURL,
+    SurveyHyperlinkedIdentityField,
+    SurveyHyperlinkedRelatedField,
+)
 from apps.items.serializers import ItemSerializer
 from .models import Annotator
 from .exceptions import AnnotatorsQuotaError
@@ -16,54 +18,29 @@ class AnnotatorSerializer(
     PrefetchMixin, QueryFieldsMixin, serializers.HyperlinkedModelSerializer
 ):
 
-    url = NestedHyperlinkedIdentityField(
-        label="This resource's URL",
-        view_name="api:annotator-detail",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    id = SelfUUIDField()
+    url = NestedURLField(view_name="api:annotator-detail")
+
+    survey = SurveyURL()
+
+    current = SurveyHyperlinkedRelatedField(
+        label="Current item's URL", view_name="api:item-detail",
+    )
+    previous = SurveyHyperlinkedRelatedField(
+        label="Previous item's URL", view_name="api:item-detail",
     )
 
-    survey = serializers.HyperlinkedRelatedField(
-        label="Parent survey's URL",
-        read_only=True,
-        view_name="api:survey-detail",
-        lookup_url_kwarg="pk",
+    vote = SurveyHyperlinkedIdentityField(
+        label="Voting URL", view_name="api:annotator-vote",
     )
-
-    current = NestedHyperlinkedRelatedField(
-        label="Current item's URL",
-        read_only=True,
-        view_name="api:item-detail",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
-    )
-    previous = NestedHyperlinkedRelatedField(
-        label="Previous item's URL",
-        read_only=True,
-        view_name="api:item-detail",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
-    )
-
-    vote = NestedHyperlinkedIdentityField(
-        label="Voting URL",
-        read_only=True,
-        view_name="api:annotator-vote",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
-    )
-    skip = NestedHyperlinkedIdentityField(
-        label="Skipping URL",
-        read_only=True,
-        view_name="api:annotator-skip",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    skip = SurveyHyperlinkedIdentityField(
+        label="Skipping URL", view_name="api:annotator-skip",
     )
 
     def create(self, validated_data: Any) -> Annotator:
         view = self.context["view"]
-        survey_id: int = validated_data.get("survey", view.kwargs.get("survey_pk"))
-        survey: Survey = Survey.objects.get(id=survey_id)
+        survey_id: int = validated_data.get("survey", view.kwargs.get("survey_id"))
+        survey: Survey = Survey.objects.get(uuid=survey_id)
         if (
             survey.max_annotators > 0
             and survey.max_annotators <= survey.annotators.count()
@@ -75,6 +52,7 @@ class AnnotatorSerializer(
     class Meta:
         model = Annotator
         fields = [
+            "id",
             "url",
             "survey",
             "name",
@@ -89,6 +67,7 @@ class AnnotatorSerializer(
             "quality",
         ]
         read_only_fields = [
+            "id",
             "survey",
             "current",
             "previous",
@@ -111,19 +90,11 @@ class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
     current = ItemSerializer(label="Current item's data", read_only=True)
     previous = ItemSerializer(label="Previous item's data", read_only=True)
 
-    vote = NestedHyperlinkedIdentityField(
-        label="Voting URL",
-        read_only=True,
-        view_name="api:annotator-vote",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    vote = SurveyHyperlinkedIdentityField(
+        label="Voting URL", view_name="api:annotator-vote",
     )
-    skip = NestedHyperlinkedIdentityField(
-        label="Skipping URL",
-        read_only=True,
-        view_name="api:annotator-skip",
-        lookup_url_kwarg="pk",
-        parent_lookup_kwargs={"survey_pk": "survey__pk"},
+    skip = SurveyHyperlinkedIdentityField(
+        label="Skipping URL", view_name="api:annotator-skip",
     )
 
     def update(self, instance: Annotator, validated_data: Any) -> Annotator:

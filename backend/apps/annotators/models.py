@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from apps.items.models import Item
 from apps.surveys.models import Survey
+from backend.fields import ShortUUIDField
 from backend.custom_types.models import QueryType
 from apps.crowd_bt.types import Alpha, Beta, AnnotatorConfidence
 from apps.crowd_bt.constants import ALPHA, BETA
@@ -13,6 +14,7 @@ from apps.crowd_bt.online import update_scores, update_annotator
 
 
 class Annotator(models.Model):
+    uuid: str = ShortUUIDField()
     name: str = models.CharField(max_length=30)
     metadata = JSONField(default=dict)
     active: str = models.BooleanField(default=True)
