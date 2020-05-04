@@ -11,6 +11,11 @@ services:
         APP_ENV: prod
       context: ../backend
       dockerfile: worker.dockerfile
+  frontend:
+    build:
+      args:
+        APP_ENV: prod
+      context: ../frontend
   prometheus:
     build:
       context: ../monitoring/prometheus

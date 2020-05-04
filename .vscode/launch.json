@@ -18,7 +18,49 @@
         }
       ],
       "port": 7913,
-      "host": "localhost"
+      "host": "localhost",
+      "justMyCode": false
+    },
+    /**
+     * Launches the Frontend client (chrome)
+     */
+    {
+      "type": "chrome",
+      "userDataDir": false,
+      "request": "launch",
+      "name": "Launch Frontend Client",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend",
+      "sourceMapPathOverrides": {
+        "webpack:///*": "${webRoot}/*"
+      }
+    },
+
+    /**
+     * Attaches to the Frontend client (chrome)
+     */
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach Frontend Client",
+      "port": 9222,
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend",
+      "sourceMapPathOverrides": {
+        "webpack:///*": "${webRoot}/*"
+      }
+    },
+
+    /**
+     * Attaches to the Frontend server
+     */
+    {
+      "name": "Attach Frontend Server",
+      "type": "node",
+      "request": "attach",
+      "sourceMaps": true,
+      "localRoot": "${workspaceFolder}/frontend",
+      "remoteRoot": "/app"
     }
   ]
 }

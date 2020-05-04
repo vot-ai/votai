@@ -4,6 +4,8 @@ services:
     image: "${IMAGE_DOMAIN-localhost}/${PROJECT_NAME-pairwise_voting}-backend:${TAG-latest}"
   celery_worker:
     image: "${IMAGE_DOMAIN-localhost}/${PROJECT_NAME-pairwise_voting}-worker:${TAG-latest}"
+  backend:
+    image: "${IMAGE_DOMAIN-localhost}/${PROJECT_NAME-pairwise_voting}-frontend:${TAG-latest}"
   redis-exporter:
     image: oliver006/redis_exporter:v1.3.5-amd64
   exporter:

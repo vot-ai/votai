@@ -9,6 +9,10 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/pgdata
       - postgres_backups:/backups
+  mongo:
+    volumes:
+      - mongo_data:/bitnami/mongodb
 volumes:
   postgres_data:
   postgres_backups:
+  mongo_data:

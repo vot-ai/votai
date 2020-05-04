@@ -18,12 +18,9 @@ services:
       --certificatesResolvers.le.acme.httpChallenge.entryPoint=web
   backend:
     command:
-      [
-        "gunicorn",
-        "backend.asgi:application",
-        "--config",
-        "gunicorn.conf.py",
-      ]
+      ["gunicorn", "backend.asgi:application", "--config", "gunicorn.conf.py"]
+  frontend:
+    command: yarn start
   redis-exporter:
     command:
       - "--redis.addr=redis://redis:6379"

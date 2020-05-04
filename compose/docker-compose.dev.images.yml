@@ -4,3 +4,5 @@ services:
     image: localhost/${PROJECT_NAME-pairwise_voting}-backend:dev
   celery_worker:
     image: localhost/${PROJECT_NAME-pairwise_voting}-worker:dev
+  frontend:
+    image: localhost/${PROJECT_NAME-pairwise_voting}-frontend:dev

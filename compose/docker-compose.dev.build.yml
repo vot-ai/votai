@@ -11,3 +11,8 @@ services:
       dockerfile: worker.dockerfile
       args:
         APP_ENV: dev
+  frontend:
+    build:
+      context: ../frontend
+      args:
+        APP_ENV: dev

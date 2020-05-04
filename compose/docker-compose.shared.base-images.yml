@@ -6,3 +6,5 @@ services:
     image: maronato/bpostgres:11
   redis:
     image: redis:5.0.4-alpine
+  mongo:
+    image: bitnami/mongodb:4.2

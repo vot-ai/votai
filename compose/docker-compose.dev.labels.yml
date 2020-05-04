@@ -26,6 +26,22 @@ services:
       - traefik.tcp.routers.backend.rule=HostSNI(`*`)
       - traefik.tcp.services.backend.loadbalancer.server.port=7913
       - traefik.tcp.routers.backend.entrypoints=backend-debug
+  frontend:
+    labels:
+      # Need to manually define the service since this container creates a service
+      # for itself and another one for the debug port
+      - traefik.http.routers.frontend.service=frontend
+      # Frontend should live under DOMAIN
+      - traefik.http.routers.frontend.rule=Host(`${DOMAIN-localhost}`)
+      # Make sure the loadbalancer uses the correct port
+      - traefik.http.services.frontend.loadbalancer.server.port=3000
+      # Development env only uses http
+      - traefik.http.routers.frontend.entrypoints=web
+      # Enable debugging through the load balancer
+      - traefik.tcp.routers.frontend.rule=Host(`${DOMAIN-localhost}`)
+      - traefik.tcp.routers.frontend.rule=HostSNI(`*`)
+      - traefik.tcp.services.frontend.loadbalancer.server.port=9229
+      - traefik.tcp.routers.frontend.entrypoints=frontend-debug
   postgres:
     labels:
       # Allow access to the Postgres instance from outside
@@ -35,6 +51,15 @@ services:
       - traefik.tcp.services.postgres.loadbalancer.server.port=5432
       # Only access through port 5432
       - traefik.tcp.routers.postgres.entrypoints=postgres
+  mongo:
+    labels:
+      # Allow access to the Mongo instance from outside
+      - traefik.tcp.routers.mongo.rule=Host(`${DOMAIN-localhost}`)
+      - traefik.tcp.routers.mongo.rule=HostSNI(`*`)
+      # Make sure the loadbalancer uses the correct port
+      - traefik.tcp.services.mongo.loadbalancer.server.port=5432
+      # Only access through port 5432
+      - traefik.tcp.routers.mongo.entrypoints=mongo
   redis:
     labels:
       # Allow access to the Redis instance from outside

@@ -49,6 +49,24 @@ services:
         - traefik.http.routers.backend.tls.certresolver=le
         # Accept both http and https
         - traefik.http.routers.backend.entrypoints=websecure
+  frontend:
+    deploy:
+      labels:
+        # Enable traefik
+        - traefik.enable=true
+        # Traefik constraints
+        - traefik.tags=traefik-public
+        # Use the proxy network for communication
+        - traefik.docker.network=proxy
+        # Frontend should live under DOMAIN
+        - traefik.http.routers.frontend.rule=Host(`${DOMAIN}`)
+        # Make sure the loadbalancer uses the correct port
+        - traefik.http.services.frontend.loadbalancer.server.port=3000
+        # Enable tls through Lets Encrypt
+        - traefik.http.routers.frontend.tls=true
+        - traefik.http.routers.frontend.tls.certresolver=le
+        # Accept both http and https
+        - traefik.http.routers.frontend.entrypoints=websecure
   grafana:
     deploy:
       labels:

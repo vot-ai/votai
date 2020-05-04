@@ -7,3 +7,5 @@ services:
   redis:
     restart: always
     command: "--maxmemory 50mb"
+  mongo:
+    restart: always

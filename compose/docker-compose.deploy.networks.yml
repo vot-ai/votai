@@ -4,6 +4,10 @@ services:
     networks:
       - default
       - proxy
+  frontend:
+    networks:
+      - default
+      - proxy
   traefik:
     networks:
       - default
@@ -12,6 +16,9 @@ services:
     networks:
       - default
   postgres:
+    networks:
+      - default
+  mongo:
     networks:
       - default
   redis:
