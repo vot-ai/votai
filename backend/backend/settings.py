@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     "dj_rest_auth.registration",
     "corsheaders",
     "drf_yasg",
+    # Misc
+    "djcelery_email",
     # Debug
     "debug_toolbar",
     "django_extensions",
@@ -230,6 +232,7 @@ ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 # CORS Settings
 CORS_ORIGIN_ALLOW_ALL = True
@@ -256,3 +259,22 @@ SWAGGER_SETTINGS = {
         },
     },
 }
+
+
+# Email settings
+EMAIL_HOST_USER = django_secrets.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = django_secrets.get("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = eval(  # pylint: disable=eval-used
+    django_secrets.get("EMAIL_USE_TLS", "True")
+)
+EMAIL_HOST = django_secrets.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(django_secrets.get("EMAIL_PORT", "587"))
+DEFAULT_FROM_EMAIL = django_secrets.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+DEFAULT_CONTACT_EMAIL = django_secrets.get("DEFAULT_CONTACT_EMAIL", EMAIL_HOST_USER)
+SERVER_EMAIL = django_secrets.get("SERVER_EMAIL", EMAIL_HOST_USER)
+
+ADMINS = [
+    ("Admin", django_secrets.get("ADMIN_ACCOUNT")),
+]
+
+EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"

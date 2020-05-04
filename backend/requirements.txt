@@ -20,6 +20,7 @@ django-health-check==3.12.1
 celery==4.4.2
 django-redis==4.11.0
 redis==3.5.0
+django-celery-email==3.0.0
 
 # REST
 django-cors-headers==3.2.1
