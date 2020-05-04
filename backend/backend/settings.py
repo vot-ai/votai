@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "apps.labels",
     "apps.surveys",
     "apps.main",
+    "apps.rest_auth",
     # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
@@ -214,6 +215,7 @@ REST_FRAMEWORK = {
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "pairwise-jwt"
 LOGOUT_ON_PASSWORD_CHANGE = False
+OLD_PASSWORD_FIELD_ENABLED = True
 SITE_ID = 1
 
 SIMPLE_JWT = {
@@ -222,6 +224,12 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+# Allauth settings
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"
 
 # CORS Settings
 CORS_ORIGIN_ALLOW_ALL = True
@@ -239,4 +247,12 @@ DEBUG_TOOLBAR_CONFIG = {
 # Documentation settings
 SWAGGER_SETTINGS = {
     "DEFAULT_AUTO_SCHEMA_CLASS": "backend.swagger_schema.CustomTagAutoSchema",
+    "SECURITY_DEFINITIONS": {
+        "JWT": {
+            "type": "http",
+            "name": "Authorization",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        },
+    },
 }

@@ -23,6 +23,11 @@ tag_extra_data = {
         "description": """
 """,
     },
+    "User": {
+        "name": "User",
+        "description": """
+""",
+    },
 }
 
 

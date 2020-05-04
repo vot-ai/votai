@@ -16,18 +16,23 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from dj_rest_auth.registration.views import VerifyEmailView as DjVerifyEmailView
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    # APIs
-    path("", include("backend.api_urls", namespace="api")),
     # API and docs
-    path("api-auth/", include("rest_framework.urls")),
     path("docs/", include("backend.docs_urls")),
+    path("", include("backend.api_urls")),
+    # Django Rest Explorer UI
+    path("api-auth/", include("rest_framework.urls")),
     # Authentication
     path("auth/", include("dj_rest_auth.urls")),
-    path("auth/registration/", include("dj_rest_auth.registration.urls")),
+    path(
+        "auth/registration/account-confirm-email/",
+        DjVerifyEmailView.as_view(),
+        name="account_email_verification_sent",
+    ),
     # Monitoring
     path("", include("django_prometheus.urls")),
     path("health/", include("health_check.urls")),

@@ -3,7 +3,6 @@ from django.conf import settings
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from . import api_urls
 from .swagger_schema import TaggedDescriptionSchemaGenerator
 
 SchemaView = get_schema_view(
@@ -33,7 +32,7 @@ SchemaView = get_schema_view(
     # validators=['flex', 'ssv'],
     public=True,
     permission_classes=(permissions.AllowAny,),
-    patterns=[path("", include(api_urls))],
+    patterns=[path("", include("backend.api_urls"))],
     generator_class=TaggedDescriptionSchemaGenerator,
 )
 
