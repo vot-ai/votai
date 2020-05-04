@@ -41,29 +41,45 @@ ROOT_URL = django_secrets.get("ROOT_URL", "http://api.localhost")
 # Application definition
 
 INSTALLED_APPS = [
+    # User apps
     "apps.annotators",
     "apps.items",
     "apps.labels",
     "apps.surveys",
     "apps.main",
+    # Django apps
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_prometheus",
+    "django.contrib.sites",
+    # REST and auth apps
     "rest_framework",
     "rest_framework.authtoken",
+    "allauth",
+    "allauth.account",
     "dj_rest_auth",
+    "dj_rest_auth.registration",
     "corsheaders",
-    "django_extensions",
-    "debug_toolbar",
     "drf_yasg",
+    # Debug
+    "debug_toolbar",
+    "django_extensions",
+    # Monitoring apps
+    "django_prometheus",
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    # "health_check.storage",
+    "health_check.contrib.celery",
+    "health_check.contrib.redis",
 ]
 
 MIDDLEWARE = [
     "backend.middleware.PrometheusBeforeMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
@@ -120,7 +136,9 @@ else:
         }
     }
 
-if os.environ.get("REDIS_URL"):
+REDIS_URL = os.environ.get("REDIS_URL")
+
+if REDIS_URL:
     # Cache backend
     CACHES = {
         "default": {
@@ -196,6 +214,7 @@ REST_FRAMEWORK = {
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "pairwise-jwt"
 LOGOUT_ON_PASSWORD_CHANGE = False
+SITE_ID = 1
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
@@ -203,6 +222,9 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+# CORS Settings
+CORS_ORIGIN_ALLOW_ALL = True
 
 DEBUG_TOOLBAR_CONFIG = {
     "SHOW_TOOLBAR_CALLBACK": lambda request: DEBUG is True,

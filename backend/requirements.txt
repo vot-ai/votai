@@ -12,6 +12,9 @@ ptipython==1.0.1
 ptvsd==4.3.2
 django-debug-toolbar==2.2
 
+# Health check
+django-health-check==3.12.1
+
 # Worker
 celery==4.4.2
 django-redis==4.11.0
@@ -21,7 +24,7 @@ redis==3.5.0
 django-cors-headers==3.2.1
 djangorestframework==3.11.0
 djangorestframework-simplejwt==4.4.0
-dj-rest-auth==1.0.4
+dj-rest-auth[with_social]==1.0.4
 rest-condition==1.0.3
 drf-nested-routers==0.91
 drf-yasg==1.17.1

@@ -31,8 +31,6 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Preinstall commands
 FROM base as preinstall
 
-# Install build deps
-# RUN apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev linux-headers libffi-dev openssl-dev python3-dev make libc-dev
 
 # Running global install
 FROM preinstall as install
@@ -56,7 +54,6 @@ FROM ${APP_ENV}-postinstall as cleanup
 
 # Cleanup
 RUN \
-    # apk --purge del .build-deps && \
     rm -rf requirements.txt docker-entrypoint.sh
 RUN apt-get autoremove -y gcc
 
@@ -70,6 +67,15 @@ COPY --from=cleanup /app/ /app/
 
 # Final stage
 FROM ${APP_ENV}-prefinal as final
+
+# Install Dockerize
+# https://github.com/jwilder/dockerize
+ENV DOCKERIZE_VERSION v0.6.1
+RUN apt-get -y install wget
+RUN wget "https://github.com/jwilder/dockerize/releases/download/${DOCKERIZE_VERSION}/dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" \
+    && tar -C /usr/local/bin -xzvf "dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" \
+    && rm "dockerize-linux-amd64-${DOCKERIZE_VERSION}.tar.gz" && dockerize --version
+RUN apt-get autoremove -y wget
 
 COPY --from=cleanup /opt/venv /opt/venv
 

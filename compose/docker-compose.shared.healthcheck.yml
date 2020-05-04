@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  backend:
+    healthcheck:
+      test: python manage.py health_check
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
