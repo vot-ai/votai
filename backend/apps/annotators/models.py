@@ -91,7 +91,8 @@ class Annotator(models.Model):
 
     def vote(self, current_wins: bool) -> Optional[Item]:
         if self.current is None:
-            return None
+            # If current is none, assume there are inactive items left
+            return self.update_items()
 
         # If this is not the first vote
         if self.previous is not None:
@@ -118,10 +119,11 @@ class Annotator(models.Model):
         survey = self.survey
         next_item = self.choose_next()
 
-        if self.current is not None and not survey.allow_concurrent:
-            self.current.deactivate()
+        if self.current is not None:
+            self.previous = self.current
+            if not survey.allow_concurrent:
+                self.current.deactivate()
 
-        self.previous = self.current
         self.current = next_item
         self.save()
 
