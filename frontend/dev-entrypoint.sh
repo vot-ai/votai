@@ -5,6 +5,6 @@
 
 # Install dependencies on local machine
 echo "Installing dev dependencies from yarn"
-yarn
+yarn install
 echo "Done! Executing command"
 exec "$@"

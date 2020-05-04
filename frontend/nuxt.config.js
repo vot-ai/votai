@@ -63,8 +63,7 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa',
-    'vue-toastification/nuxt'
+    '@nuxtjs/pwa'
   ],
   env: {
     API_URL: process.env.API_URL,

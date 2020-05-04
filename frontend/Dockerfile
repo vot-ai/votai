@@ -6,9 +6,12 @@ ENV HOST 0.0.0.0
 
 WORKDIR /app
 
+RUN mkdir /app/node_modules
+
 ## add user
 RUN addgroup -S user && adduser -S user -G user
 RUN chown -R user:user /app && chmod -R 755 /app
+RUN chown -R user:user /app/node_modules && chmod -R 755 /app/node_modules
 
 # Install Dockerize
 # https://github.com/jwilder/dockerize
