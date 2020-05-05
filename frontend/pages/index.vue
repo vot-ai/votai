@@ -6,7 +6,9 @@
         <vuetify-logo />
       </div>
       <v-card>
-        <v-card-title class="headline">{{ $t('welcome') }} hey</v-card-title>
+        <v-card-title
+          class="headline"
+        >{{ $t('welcome') }} hey {{ $auth.loggedIn ? $auth.user.email : "anon" }}</v-card-title>
         <v-card-text>
           <p>
             Vuetify is a progressive Material Design component framework for
@@ -53,6 +55,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn color="primary" @click="localeChange">Locale</v-btn>
+          <v-btn color="primary" @click="$auth.logout()">Logout</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -61,19 +64,21 @@
 
 <script lang="ts">
 import { defineComponent } from 'nuxt-composition-api'
-import { useToast } from 'vue-toastification/composition'
+// import { useToast } from 'vue-toastification/composition'
 
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
 
 export default defineComponent({
+  ...{ auth: false },
   components: {
     Logo,
     VuetifyLogo
   },
-  setup() {
-    const toast = useToast()
-    toast.success('hey')
+  setup() {},
+  mounted() {
+    // @ts-ignore
+    window.auth = this.$auth
   },
   methods: {
     localeChange() {

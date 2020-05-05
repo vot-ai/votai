@@ -1,6 +1,6 @@
 # Load env
 ARG APP_ENV=dev
-FROM node:13.6.0-alpine as base
+FROM node:13.7-alpine as base
 
 ENV HOST 0.0.0.0
 

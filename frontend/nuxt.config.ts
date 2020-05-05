@@ -1,19 +1,19 @@
 import { Configuration } from '@nuxt/types'
 // @ts-ignore
 import colors from 'vuetify/es5/util/colors'
-// const getSecrets = require('./getSecrets')
+import getSecrets from './getSecrets'
 
-// const socialProviderSecrets = getSecrets({
-//   path: process.env.SECRETS_PATH,
-//   filename: 'SOCIAL_PROVIDER_SECRETS'
-// })
+const socialProviderSecrets = getSecrets({
+  path: process.env.SECRETS_PATH || '',
+  filename: 'SOCIAL_PROVIDER_SECRETS'
+})
 
-// const frontendSecrets = getSecrets({
-//   path: process.env.SECRETS_PATH,
-//   filename: 'FRONTEND_SECRETS'
-// })
+const frontendSecrets = getSecrets({
+  path: process.env.SECRETS_PATH || '',
+  filename: 'FRONTEND_SECRETS'
+})
 
-// process.env = { ...process.env, ...socialProviderSecrets, ...frontendSecrets }
+process.env = { ...process.env, ...socialProviderSecrets, ...frontendSecrets }
 
 const config: Configuration = {
   mode: 'universal',
@@ -50,9 +50,7 @@ const config: Configuration = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [
-    { src: '~/plugins/vuex-persist', ssr: false }
-  ],
+  // plugins: [{ src: '~/plugins/vuex-persist', ssr: false }],
   /*
    ** Nuxt.js dev-modules
    */
@@ -68,11 +66,31 @@ const config: Configuration = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     ['@nuxtjs/pwa', { icon: false }],
-    'nuxt-i18n'
+    'nuxt-i18n',
+    '@nuxtjs/auth-next'
   ],
   env: {
     API_URL: process.env.API_URL || '',
     API_URL_BROWSER: process.env.API_URL_BROWSER || ''
+  },
+  router: {
+    middleware: ['auth']
+  },
+  /*
+   ** Auth module configuration
+   ** See https://auth.nuxtjs.org/
+   */
+  auth: {
+    strategies: {
+      github: {
+        endpoints: {
+          token: `${process.env.API_URL}/auth/social/github`,
+          userInfo: '/user/'
+        },
+        clientId: process.env.GITHUB_CLIENT_ID,
+        clientSecret: process.env.GITHUB_CLIENT_SECRET
+      }
+    }
   },
   /*
    ** Axios module configuration
@@ -86,10 +104,13 @@ const config: Configuration = {
   i18n: {
     lazy: true,
     langDir: 'locales/',
-    locales: [{ code: 'en', iso: 'en-US', file: 'en.ts' }, { code: 'pt', iso: 'pt-BR', file: 'pt.ts' }],
+    locales: [
+      { code: 'en', iso: 'en-US', file: 'en.ts' },
+      { code: 'pt', iso: 'pt-BR', file: 'pt.ts' }
+    ],
     defaultLocale: 'pt',
     detectBrowserLanguage: {
-      alwaysRedirect: true,
+      alwaysRedirect: true
     },
     vuex: {
       moduleName: 'i18n',
@@ -98,7 +119,7 @@ const config: Configuration = {
       syncRouteParams: true
     },
     vueI18n: {
-      fallbackLocale: 'pt',
+      fallbackLocale: 'pt'
     }
   },
   /*
