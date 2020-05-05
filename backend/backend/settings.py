@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from datetime import timedelta
 from .read_env import read_env
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -209,23 +208,14 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "dj_rest_auth.utils.JWTCookieAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "PAGE_SIZE": 20,
 }
 
-REST_USE_JWT = True
-JWT_AUTH_COOKIE = "pairwise-jwt"
 LOGOUT_ON_PASSWORD_CHANGE = False
 OLD_PASSWORD_FIELD_ENABLED = True
 SITE_ID = 1
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
-}
 
 # Allauth settings
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
