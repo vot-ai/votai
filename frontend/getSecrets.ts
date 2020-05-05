@@ -1,8 +1,8 @@
-const { readFileSync, accessSync, constants } = require('fs')
-const { join } = require('path')
-const { parse } = require('dotenv')
+import { readFileSync, accessSync, constants } from 'fs'
+import { join } from 'path'
+import { parse } from 'dotenv'
 
-module.exports = function(moduleOptions) {
+export default function (moduleOptions: { path: string, filename: string }) {
   const options = {
     path: './',
     filename: 'secrets',

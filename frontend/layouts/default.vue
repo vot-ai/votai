@@ -53,6 +53,7 @@
 <script lang="ts">
 import { defineComponent } from 'nuxt-composition-api'
 import { provideToast } from 'vue-toastification/composition'
+import 'vue-toastification/dist/index.css'
 
 export default defineComponent({
   data() {

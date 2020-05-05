@@ -3,12 +3,16 @@
   "eslint.workingDirectories": [
     "./frontend"
   ],
+  "eslint.validate": [
+    "typescript",
+    "javascript",
+    "vue"
+  ],
   "editor.formatOnSave": true,
   "python.formatting.provider": "black",
   "python.linting.enabled": true,
   "python.linting.pylintEnabled": true,
   "python.pythonPath": "/Users/maronato/.pyenv/versions/pairwise-voting/bin/python",
-  "editor.tabSize": 4,
   "python.linting.mypyEnabled": true,
   "python.linting.mypyArgs": [
     "--ignore-missing-imports",

@@ -6,7 +6,7 @@
         <vuetify-logo />
       </div>
       <v-card>
-        <v-card-title class="headline">Welcome to the Vuetify + Nuxt.js template</v-card-title>
+        <v-card-title class="headline">{{ $t('welcome') }} hey</v-card-title>
         <v-card-text>
           <p>
             Vuetify is a progressive Material Design component framework for
@@ -52,7 +52,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire">Continue</v-btn>
+          <v-btn color="primary" @click="localeChange">Locale</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -73,7 +73,16 @@ export default defineComponent({
   },
   setup() {
     const toast = useToast()
-    return { toast }
+    toast.success('hey')
+  },
+  methods: {
+    localeChange() {
+      if (this.$i18n.locale === 'pt') {
+        this.$i18n.setLocale('en')
+      } else {
+        this.$i18n.setLocale('pt')
+      }
+    }
   }
 })
 </script>

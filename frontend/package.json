@@ -5,11 +5,11 @@
   "author": "Maronato",
   "private": true,
   "scripts": {
-    "dev": "nuxt dev",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "dev": "cross-env nodemon server/index.ts",
+    "build": "nuxt-ts build",
+    "start": "cross-env NODE_ENV=production ts-node --project 'server/tsconfig.json' server/index.ts",
+    "generate": "nuxt-ts generate",
+    "lint": "eslint --ext .ts,.js,.vue --ignore-path .gitignore .",
     "test": "jest"
   },
   "lint-staged": {
@@ -21,8 +21,13 @@
     }
   },
   "dependencies": {
+    "@nuxt/typescript-runtime": "^0.4.6",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^3.0.0-0",
+    "@types/koa": "^2.11.3",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-helmet": "^5.2.0",
+    "@types/koa-logger": "^3.1.1",
     "@vue/composition-api": "^0.5.0",
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
@@ -35,7 +40,11 @@
     "koa-router": "^8.0.8",
     "mongoose": "^5.9.11",
     "nuxt": "^2.0.0",
-    "vue-toastification": "^1.6.0"
+    "nuxt-i18n": "^6.11.0",
+    "ts-node": "^8.10.1",
+    "vue-toastification": "^1.7.0",
+    "vuex-module-decorators": "^0.17.0",
+    "vuex-persist": "^2.2.0"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.6.0",
@@ -43,7 +52,6 @@
     "@nuxtjs/eslint-module": "^1.0.0",
     "@nuxtjs/vuetify": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
-    "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
     "eslint": "^6.1.0",
     "eslint-config-prettier": "^6.10.0",

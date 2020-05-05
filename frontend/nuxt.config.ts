@@ -1,19 +1,21 @@
-const colors = require('vuetify/es5/util/colors').default
-const getSecrets = require('./getSecrets')
+import { Configuration } from '@nuxt/types'
+// @ts-ignore
+import colors from 'vuetify/es5/util/colors'
+// const getSecrets = require('./getSecrets')
 
-const socialProviderSecrets = getSecrets({
-  path: process.env.SECRETS_PATH,
-  filename: 'SOCIAL_PROVIDER_SECRETS'
-})
+// const socialProviderSecrets = getSecrets({
+//   path: process.env.SECRETS_PATH,
+//   filename: 'SOCIAL_PROVIDER_SECRETS'
+// })
 
-const frontendSecrets = getSecrets({
-  path: process.env.SECRETS_PATH,
-  filename: 'FRONTEND_SECRETS'
-})
+// const frontendSecrets = getSecrets({
+//   path: process.env.SECRETS_PATH,
+//   filename: 'FRONTEND_SECRETS'
+// })
 
-process.env = { ...process.env, ...socialProviderSecrets, ...frontendSecrets }
+// process.env = { ...process.env, ...socialProviderSecrets, ...frontendSecrets }
 
-module.exports = {
+const config: Configuration = {
   mode: 'universal',
   server: {
     port: 3000,
@@ -48,7 +50,9 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [
+    { src: '~/plugins/vuex-persist', ssr: false }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -63,17 +67,40 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    ['@nuxtjs/pwa', { icon: false }],
+    'nuxt-i18n'
   ],
   env: {
-    API_URL: process.env.API_URL,
-    API_URL_BROWSER: process.env.API_URL_BROWSER
+    API_URL: process.env.API_URL || '',
+    API_URL_BROWSER: process.env.API_URL_BROWSER || ''
   },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
   axios: {},
+  /**
+   * i18n module configuration
+   * See https://nuxt-community.github.io/nuxt-i18n/
+   */
+  i18n: {
+    lazy: true,
+    langDir: 'locales/',
+    locales: [{ code: 'en', iso: 'en-US', file: 'en.ts' }, { code: 'pt', iso: 'pt-BR', file: 'pt.ts' }],
+    defaultLocale: 'pt',
+    detectBrowserLanguage: {
+      alwaysRedirect: true,
+    },
+    vuex: {
+      moduleName: 'i18n',
+      syncLocale: true,
+      syncMessages: false,
+      syncRouteParams: true
+    },
+    vueI18n: {
+      fallbackLocale: 'pt',
+    }
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
@@ -108,5 +135,12 @@ module.exports = {
         config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
       }
     }
+  },
+  typescript: {
+    typeCheck: {
+      eslint: true
+    }
   }
 }
+
+export default config
