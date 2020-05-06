@@ -8,6 +8,27 @@ import { OAuthRequest, OAuthResponse } from '../types/oauth'
 import { TokenResponse, ResponseStatus } from '../types/responses'
 import { IUser, SerializedUser } from '../models/user'
 
+export const generateJWT = (user: IUser) => {
+  const serializedUser = user.serialize()
+  const token = jwt.sign(
+    serializedUser,
+    process.env.JWT_SECRET || 'my_secret',
+    {
+      expiresIn: parseInt(process.env.JWT_LIFETIME || '3600')
+    }
+  )
+  const refreshToken = jwt.sign(
+    serializedUser,
+    process.env.JWT_REFRESH_SECRET || 'my_other_secret',
+    { expiresIn: parseInt(process.env.JWT_REFRESH_LIFETIME || '86400') }
+  )
+  const response: TokenResponse = {
+    access_token: token,
+    refresh_token: refreshToken
+  }
+  return response
+}
+
 export abstract class BaseOAuthAdapter {
   private readonly flowType: 'refresh_token' | 'access_token'
   protected readonly oauthRequest: OAuthRequest
@@ -84,24 +105,7 @@ export abstract class BaseOAuthAdapter {
   }
 
   private getJWT(user: IUser) {
-    const serializedUser = user.serialize()
-    const token = jwt.sign(
-      serializedUser,
-      process.env.JWT_SECRET || 'my_secret',
-      {
-        expiresIn: parseInt(process.env.JWT_LIFETIME || '3600')
-      }
-    )
-    const refreshToken = jwt.sign(
-      serializedUser,
-      process.env.JWT_REFRESH_SECRET || 'my_other_secret',
-      { expiresIn: parseInt(process.env.JWT_REFRESH_LIFETIME || '86400') }
-    )
-    const response: TokenResponse = {
-      access_token: token,
-      refresh_token: refreshToken
-    }
-    return response
+    return generateJWT(user)
   }
 
   public async executeFlow() {
