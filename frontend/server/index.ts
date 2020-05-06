@@ -32,7 +32,15 @@ app.use(async (ctx: Koa.Context, next: Koa.Next) => {
 })
 // Setup middlewares
 app.use(bodyParser())
-app.use(logger())
+app.use(
+  logger((str, args) => {
+    const arrArgs = args as string[]
+    const [, , url, , ,] = arrArgs
+    if (!['/_nuxt', '/__', '/sw.js', '/vuetify'].some(s => url.startsWith(s))) {
+      consola.log(str)
+    }
+  })
+)
 app.use(helmet())
 
 // API Routes

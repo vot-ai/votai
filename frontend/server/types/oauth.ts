@@ -7,6 +7,7 @@ export interface OAuthRequest {
   response_type: string
   audience?: string
   grant_type?: string
+  refresh_token?: string
 }
 
 export interface OAuthResponse {

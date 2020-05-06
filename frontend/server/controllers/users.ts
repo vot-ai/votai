@@ -1,54 +1,31 @@
-import { Next } from 'koa'
 import User from '../models/user'
-import {
-  ContextWithState,
-  UserDataState,
-  MaybeUserState
-} from '../types/context'
-import { ResponseMessages, ResponseStatus } from '../types/responses'
+import { UserData } from '../types/context'
 
 class UserController {
-  private create = async (ctx: ContextWithState<UserDataState>, next: Next) => {
-    const userData = ctx.state.userData
+  private create = async (userData: UserData) => {
     const { provider, profileData, ...user } = userData
     const newUserBody = {
       ...user,
       identities: [{ provider, userId: user.userId, profileData }]
     }
-    const newUser = await User.create(newUserBody).catch(() => null)
-
-    if (newUser) {
-      // Set the current user and go to next middleware
-      ctx.state.user = newUser
-      await next()
-    } else {
-      ctx.status = ResponseStatus.VALIDATION_ERROR
-      ctx.body = ResponseMessages.VALIDATION_ERROR
-    }
+    return await User.create(newUserBody).catch(() => null)
   }
 
-  public setUserByEmail = async (
-    ctx: ContextWithState<UserDataState>,
-    next: Next
+  public findUserByEmail = async (
+    userData: Pick<UserData, 'email'> & Partial<UserData>
   ) => {
-    const { email } = ctx.state.userData
-    ctx.state.user = await User.find()
+    const { email } = userData
+    return await User.find()
       .byEmail(email)
       .exec()
-    await next()
   }
 
-  public getOrCreateUser = async (
-    ctx: ContextWithState<UserDataState<MaybeUserState>>,
-    next: Next
-  ) => {
-    const user = ctx.state.user
+  public getOrCreateUser = async (userData: UserData) => {
+    const user = await this.findUserByEmail(userData)
     if (user) {
-      // User already exists. Nothing else to do
-      await next()
+      return user
     } else {
-      // User does not exist. Create it
-      await this.create(ctx, next)
+      return await this.create(userData)
     }
   }
 }
