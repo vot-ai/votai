@@ -90,7 +90,8 @@ const config: Configuration = {
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET
       }
-    }
+    },
+    plugins: ['~/plugins/auth.ts']
   },
   /*
    ** Axios module configuration

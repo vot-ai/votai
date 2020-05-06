@@ -1,5 +1,6 @@
 import Router from '@koa/router'
-import { githubLogin, facebookLogin, updateTokens } from '../middlewares/auth'
+import { updateTokens } from '../middlewares/auth'
+import { githubLogin } from '../middlewares/social'
 
 const facebook = new Router()
 const github = new Router()
@@ -8,7 +9,7 @@ const token = new Router()
 const auth = new Router()
 
 // Social providers
-facebook.post('/', facebookLogin())
+// facebook.post('/', facebookLogin())
 github.post('/', githubLogin())
 
 // Social endpoints
