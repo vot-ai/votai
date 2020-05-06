@@ -89,7 +89,7 @@ export abstract class BaseOAuthAdapter {
       serializedUser,
       process.env.JWT_SECRET || 'my_secret',
       {
-        expiresIn: parseInt('30')
+        expiresIn: parseInt(process.env.JWT_LIFETIME || '3600')
       }
     )
     const refreshToken = jwt.sign(
