@@ -84,8 +84,8 @@ const config: Configuration = {
     strategies: {
       github: {
         endpoints: {
-          token: `${process.env.API_URL}/auth/social/github`,
-          userInfo: '/user/'
+          token: `${process.env.API_URL}/api/auth/social/github`,
+          userInfo: '/api/user/'
         },
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET
