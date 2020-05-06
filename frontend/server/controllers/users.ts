@@ -15,6 +15,7 @@ class UserController {
     userData: Pick<UserData, 'email'> & Partial<UserData>
   ) => {
     const { email } = userData
+    // TODO: Update user with new data
     return await User.find()
       .byEmail(email)
       .exec()
