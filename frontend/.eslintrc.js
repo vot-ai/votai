@@ -10,9 +10,7 @@ module.exports = {
     'prettier/vue',
     'plugin:nuxt/recommended'
   ],
-  plugins: [
-    'prettier'
-  ],
+  plugins: ['prettier'],
   // add your custom rules here
   rules: {
     'nuxt/no-cjs-in-config': 'off',
@@ -29,6 +27,9 @@ module.exports = {
       }
     ],
     'vue/no-unused-components': 'off',
-    'vue/require-valid-default-prop': 'off'
+    'vue/require-valid-default-prop': 'off',
+    'no-useless-constructor': 'off',
+    'no-dupe-class-members': 'off',
+    'lines-between-class-members': 'off'
   }
 }

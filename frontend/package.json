@@ -27,6 +27,7 @@
     "@nuxtjs/auth-next": "5.0.0-1588537732.a13c02f",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/pwa": "^3.0.0-0",
+    "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^8.3.9",
     "@types/koa": "^2.11.3",
     "@types/koa-bodyparser": "^4.3.0",
@@ -34,8 +35,10 @@
     "@types/koa-logger": "^3.1.1",
     "@types/koa__router": "^8.0.2",
     "@types/mongoose": "^5.7.15",
+    "@types/yup": "^0.28.0",
     "@vue/composition-api": "^0.5.0",
     "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
@@ -49,9 +52,11 @@
     "nuxt": "^2.0.0",
     "nuxt-i18n": "^6.11.0",
     "ts-node": "^8.10.1",
+    "uuid": "^8.0.0",
     "vue-toastification": "^1.7.0",
     "vuex-module-decorators": "^0.17.0",
-    "vuex-persist": "^2.2.0"
+    "vuex-persist": "^2.2.0",
+    "yup": "^0.28.5"
   },
   "devDependencies": {
     "@nuxt/typescript-build": "^0.6.0",
