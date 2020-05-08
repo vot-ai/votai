@@ -1,6 +1,14 @@
 import { Context, DefaultState } from 'koa'
-import { IUser } from '../models/user'
+import { IUser, SerializedUser } from '../models/user'
+import { AnonUser } from '../models/anonUser'
 import { OAuthRequest, OAuthResponse } from './oauth'
+import {
+  RequestAnonUser,
+  RequestRegisterdUser,
+  RequestUnknownUser,
+  RequestUnauthenticatedUser,
+  RequestAuthenticatedUser
+} from './requests'
 
 /********************************************************************************
  ** Base types
@@ -27,12 +35,34 @@ export type UserDataState<S extends DefaultState = DefaultState> = S & {
   userData: UserData
 }
 
-export type UserState<S extends DefaultState = DefaultState> = S & {
-  user: IUser
+export type UnknownUserState<S extends DefaultState = DefaultState> = S & {
+  user: RequestUnknownUser
 }
 
-export type MaybeUserState<S extends DefaultState = DefaultState> = S & {
-  user: IUser | null
+export type RegisteredUserState<S extends DefaultState = DefaultState> = S & {
+  user: RequestRegisterdUser
+}
+
+export type AnonUserState<S extends DefaultState = DefaultState> = S & {
+  user: RequestAnonUser
+}
+
+export type AuthenticatedUserState<
+  S extends DefaultState = DefaultState
+> = S & {
+  user: RequestAuthenticatedUser
+}
+
+export type UnauthenticatedUserState<
+  S extends DefaultState = DefaultState
+> = S & {
+  user: RequestUnauthenticatedUser
+}
+
+export type PreAuthenticationUserState<
+  S extends DefaultState = DefaultState
+> = S & {
+  user?: SerializedUser | AnonUser
 }
 
 export type RawUserDataState<S extends DefaultState = DefaultState> = S & {

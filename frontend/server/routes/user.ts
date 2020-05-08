@@ -1,23 +1,21 @@
-import Koa from 'koa'
 import Router from '@koa/router'
-import protect from '../middlewares/protect'
-import { SerializedUser } from '../models/user'
-import { ResponseStatus, ResponseMessages } from '../types/responses'
-import UserController from '../controllers/users'
+import { authenticationRequired } from '../middlewares/protect'
+import { ResponseStatus } from '../types/responses'
+import { ContextWithState, AuthenticatedUserState } from '../types/context'
+import { isRegistered } from '../middlewares/auth'
 
 const user = new Router()
 
 // User data
-user.get('/', protect(), async (ctx: Koa.Context) => {
-  const serialized: SerializedUser = ctx.state.user
-  const user = await UserController.findUserByEmail(serialized)
-  if (user) {
-    ctx.body = user.serialize()
+user.get(
+  '/',
+  authenticationRequired(),
+  (ctx: ContextWithState<AuthenticatedUserState>) => {
+    const user = ctx.state.user
+    const response = isRegistered(user) ? user.serialize() : user.serialize()
+    ctx.body = response
     ctx.status = ResponseStatus.OK
-  } else {
-    ctx.body = ResponseMessages.UNAUTHORIZED_ERROR
-    ctx.status = ResponseStatus.UNAUTHORIZED_ERROR
   }
-})
+)
 
 export default user

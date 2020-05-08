@@ -82,7 +82,31 @@ const config: Configuration = {
    */
   auth: {
     strategies: {
+      anonymous: {
+        scheme: 'refresh',
+        token: {
+          property: 'access_token',
+          maxAge: 1800,
+          type: 'Bearer'
+        },
+        refreshToken: {
+          property: 'refresh_token',
+          data: 'refresh_token',
+          maxAge: 60 * 60 * 24 * 30
+        },
+        user: {
+          property: false,
+          autoFetch: true
+        },
+        endpoints: {
+          login: { url: '/api/auth/anon/token', method: 'post' },
+          refresh: { url: '/api/auth/anon/token', method: 'post' },
+          user: { url: '/api/user', method: 'get' },
+          logout: false
+        }
+      },
       github: {
+        responseType: 'code',
         endpoints: {
           token: `${process.env.API_URL}/api/auth/social/github`,
           userInfo: '/api/user/'
@@ -109,6 +133,7 @@ const config: Configuration = {
       { code: 'en', iso: 'en-US', file: 'en.ts' },
       { code: 'pt', iso: 'pt-BR', file: 'pt.ts' }
     ],
+    strategy: 'no_prefix',
     defaultLocale: 'pt',
     detectBrowserLanguage: {
       alwaysRedirect: true

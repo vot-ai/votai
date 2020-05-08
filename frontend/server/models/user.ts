@@ -5,6 +5,7 @@ import mongoose, {
   DocumentQuery,
   Model
 } from 'mongoose'
+import { Annotator } from './annotator'
 
 /**
  * Subdocument containing information about connections (OAuth resources)
@@ -63,41 +64,47 @@ export interface SerializedUser {
   updatedAt: Date
 }
 
-/**
- * Serialize a user
- * @param this Current user instance
- */
-const serialize = function(this: IUser) {
-  const userObject = this.toObject()
-  const serialized: SerializedUser = {
-    email: userObject.email,
-    userId: userObject.userId,
-    name: userObject.name,
-    picture: userObject.picture,
-    givenName: userObject.givenName,
-    familyName: userObject.familyName,
-    identities: userObject.identities,
-    createdAt: userObject.createdAt,
-    updatedAt: userObject.updatedAt
+const userMethods = {
+  serialize(this: IUser) {
+    const userObject = this.toObject()
+    const serialized: SerializedUser = {
+      email: userObject.email,
+      userId: userObject.userId,
+      name: userObject.name,
+      picture: userObject.picture,
+      givenName: userObject.givenName,
+      familyName: userObject.familyName,
+      identities: userObject.identities,
+      createdAt: userObject.createdAt,
+      updatedAt: userObject.updatedAt
+    }
+    return serialized
+  },
+  getAnnotators(this: IUser) {
+    return Annotator.findOne()
+      .fromUser(this)
+      .exec()
   }
-  return serialized
 }
 
 /**
  * Query helpers for the user model
  */
 const userQueryHelpers = {
-  byEmail(this: DocumentQuery<any, IUser>, email: string) {
+  byEmail<T>(this: DocumentQuery<T, IUser>, email: string) {
     return this.findOne({ email })
   }
 }
-
+/**
+ * User model methods
+ */
+const userStatics = {}
 /**
  * User instance as returned by mongo
  */
 export interface IUser extends Document, SerializedUser {
   identities: IConnection[]
-  serialize: typeof serialize
+  serialize: typeof userMethods.serialize
 }
 
 /**
@@ -107,6 +114,7 @@ export interface IUserModel extends Model<IUser, typeof userQueryHelpers> {}
 
 // Register query helpers and methods
 UserSchema.query = userQueryHelpers
-UserSchema.methods.serialize = serialize
+UserSchema.methods = userMethods
+UserSchema.statics = userStatics
 
 export default mongoose.model<IUser, IUserModel>('User', UserSchema)

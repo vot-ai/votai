@@ -26,15 +26,8 @@ export const pairwiseAxios = Axios.create({
 
 export class PairwiseClient {
   async request<T = any>(config: AxiosRequestConfig) {
-    try {
-      const response = await pairwiseAxios(config)
-      return response as AxiosResponse<T>
-    } catch (e) {
-      const x = e
-      console.log(x)
-      debugger
-      throw e
-    }
+    const response = await pairwiseAxios(config)
+    return response as AxiosResponse<T>
   }
 
   async paginatedRequest<T = any>(
@@ -296,7 +289,7 @@ abstract class BaseInterface<T> {
 }
 
 export class ItemInterface extends BaseInterface<Item> {
-  private readonly id: ItemId
+  readonly id: ItemId
 
   protected constructor(surveyId: SurveyId, self: Item) {
     super(surveyId, self)
@@ -353,7 +346,7 @@ export class ItemInterface extends BaseInterface<Item> {
 }
 
 export class AnnotatorInterface extends BaseInterface<Annotator> {
-  private readonly id: AnnotatorId
+  readonly id: AnnotatorId
   private _current: (ItemInterface & Item) | null = null
   private _previous: (ItemInterface & Item) | null = null
 
@@ -532,28 +525,26 @@ export class SurveyInterface extends BaseInterface<Survey> {
   }
 
   static async create(data: NewSurvey) {
-    debugger
     const survey = await new PairwiseClient().createSurvey(data)
     return this.createInterface(survey.id, survey)
   }
 
   static async createInterface(
     surveyId: SurveyId,
+    self?: Survey
+  ): Promise<Readonly<Survey> & SurveyInterface>
+  static async createInterface(
+    surveyId: SurveyId,
     self: Survey
   ): Promise<Readonly<Survey> & SurveyInterface>
   static async createInterface(
     surveyId: SurveyId,
-    id: SurveyId
-  ): Promise<Readonly<Survey> & SurveyInterface>
-  static async createInterface(
-    surveyId: SurveyId,
-    idOrSelf: SurveyId | Survey
-  ) {
-    let survey = idOrSelf
-    if (typeof survey === 'string') {
+    self?: Survey
+  ): Promise<Readonly<Survey> & SurveyInterface> {
+    let survey = self
+    if (typeof survey === 'undefined') {
       survey = await new PairwiseClient().getSurvey(surveyId)
     }
-    return new SurveyInterface(surveyId, survey as Survey) as SurveyInterface &
-      Survey
+    return new SurveyInterface(surveyId, survey) as SurveyInterface & Survey
   }
 }
