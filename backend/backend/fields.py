@@ -6,7 +6,7 @@ import shortuuid
 
 
 def default_gen() -> Any:
-    return shortuuid.uuid()[:7]
+    return shortuuid.uuid()[:12]
 
 
 # Model fields
@@ -16,7 +16,7 @@ class ShortUUIDField(CharField):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         kwargs.update(
             {
-                "max_length": 7,
+                "max_length": 22,
                 "editable": False,
                 "blank": True,
                 "null": False,
