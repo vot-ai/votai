@@ -71,8 +71,6 @@ class AnnotatorSerializer(
             "survey",
             "current",
             "previous",
-            "alpha",
-            "beta",
             "quality",
             "vote",
             "skip",

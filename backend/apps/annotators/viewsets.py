@@ -10,7 +10,7 @@ from backend.permissions.ownership import OwnsObject
 from backend.mixins.prefetch import PrefetchQuerysetModelMixin
 from backend.mixins.queryfields import QueryFieldsMixin
 from backend.custom_types.models import QueryType
-from apps.surveys.exceptions import InactiveSurveyError
+from apps.surveys.exceptions import InactiveSurveyError, MaxBudgetReachedError
 from .exceptions import InactiveAnnotatorError
 from .serializers import AnnotatorSerializer, VoteSerializer, IgnoreSerializer
 from .models import Annotator
@@ -55,7 +55,7 @@ class SurveyAnnotatorViewset(
 
         Votes for an item as the annotator. The parameter provided `current_wins` represents whether the current item is better than the previous. **This cannot be undone.**
         """
-        annotator = self.get_object()
+        annotator: Annotator = self.get_object()
         if not annotator.active:
             raise InactiveAnnotatorError(
                 "Cannot vote because the annotator is inactive"
@@ -63,6 +63,10 @@ class SurveyAnnotatorViewset(
 
         if not annotator.survey.active:
             raise InactiveSurveyError("Cannot vote because the survey is inactive")
+        if annotator.survey.consumed_budget >= 1:
+            raise MaxBudgetReachedError(
+                "Maximum survey budget reached. Cannot create more votes."
+            )
         return super().update(request, **kwargs)
 
     @swagger_auto_schema(responses={400: "Annotator/Survey are inactive"})

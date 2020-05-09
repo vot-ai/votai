@@ -1,4 +1,6 @@
 from typing import Any
+from django.db.models import Count
+from django.db.models.functions import Least, Greatest
 from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -28,7 +30,7 @@ class SurveyViewset(PrefetchQuerysetModelMixin, viewsets.ModelViewSet):
     ownership_field = "owner"
 
     serializer_class = SurveySerializer
-    queryset = Survey.objects.all()
+    queryset = Survey.with_sql_computations()
 
     def get_queryset(self) -> QueryType[Survey]:
         qs: QueryType[Survey] = super().get_queryset()

@@ -4,13 +4,13 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from apps.items.models import Item
 from apps.surveys.models import Survey
-from backend.fields import ShortUUIDField
-from backend.custom_types.models import QueryType
 from apps.crowd_bt.types import Alpha, Beta, AnnotatorConfidence
 from apps.crowd_bt.constants import ALPHA, BETA
 from apps.crowd_bt.entropy import expected_information_gain
 from apps.crowd_bt.utils import random_argmax
 from apps.crowd_bt.online import update_scores, update_annotator
+from backend.fields import ShortUUIDField
+from backend.custom_types.models import QueryType
 
 
 class Annotator(models.Model):
@@ -83,8 +83,9 @@ class Annotator(models.Model):
             else:
                 previous = self.current.score
                 annotator = self.confidence
+                gamma = self.survey.gamma
                 func: Callable[[Item], float] = lambda item: expected_information_gain(
-                    item.score, previous, annotator, gamma=self.survey.gamma
+                    item.score, previous, annotator, gamma=gamma
                 )
                 chosen = random_argmax(func, list_options)
         return chosen
@@ -137,6 +138,10 @@ class Annotator(models.Model):
 
     @classmethod
     def create_annotator(cls, **data: Any) -> "Annotator":
+        survey: Survey = data["survey"]
+        default_quality = survey.get_default_annotator_quality()
+        data["alpha"] = data.get("alpha", default_quality[0])
+        data["beta"] = data.get("beta", default_quality[1])
         annotator: Annotator = cls(**data)
         annotator.save()
         annotator.update_items()

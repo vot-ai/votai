@@ -17,6 +17,13 @@ Represents the tradeoff between exploration and exploitation
 """
 GAMMA: Final[float] = 5.0
 
+"""Base Dynamic Gamma (Ɣ)
+
+Base gamma for the dynamic implementation discussed at the end of
+the paper's information gain discussion
+"""
+DYNAMIC_GAMMA: Final[float] = 10.0
+
 """Epsilon (ε)
 
 ε-greedy variable to select random item from pool instead
@@ -41,9 +48,19 @@ SIGMA_SQUARED: Final[float] = 1.0
 Initial ɑ. Assumes annotator is good.
 """
 ALPHA: Final[float] = 10
+ALPHA_MALICIOUS: Final[float] = 2
 
 """Initial Beta (β)
 
 Initial β. Assumes annotator is good.
 """
 BETA: Final[float] = 1
+BETA_MALICIOUS: Final[float] = 2
+
+
+"""Tau (τ)
+
+During model evaluation, τ describes at which steps Ɣ should decay by half in order
+to change the model from exploration to exploitation
+"""
+TAU: Final[float] = 0.25
