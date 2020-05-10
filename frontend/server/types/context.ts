@@ -1,6 +1,7 @@
 import { Context, DefaultState } from 'koa'
 import { IUser, SerializedUser } from '../models/user'
 import { AnonUser } from '../models/anonUser'
+import { ISurvey } from '../models/survey'
 import { OAuthRequest, OAuthResponse } from './oauth'
 import {
   RequestAnonUser,
@@ -77,11 +78,27 @@ export type OAuthResponseState<S extends DefaultState = DefaultState> = S & {
   oauthResponse: OAuthResponse
 }
 
+export type SurveyState<S extends DefaultState = DefaultState> = S & {
+  survey: ISurvey
+}
+
+export type BaseCookieState<S extends DefaultState = DefaultState> = S
+
+export type SurveyAccessCookieState<
+  S extends BaseCookieState = BaseCookieState
+> = S & {
+  cookies: {
+    surveyAccess?: string[]
+  }
+}
+
 /*********************************************************************************
  ** Context generics
  *********************************************************************************/
 
-export interface ContextWithState<S extends DefaultState = DefaultState>
-  extends Context {
+export type ContextWithState<
+  S extends DefaultState = DefaultState,
+  C extends Context = Context
+> = C & {
   state: S
 }

@@ -1,6 +1,7 @@
 import Router from '@koa/router'
 import { githubAuthMiddleware } from '../middlewares/social'
 import { anonMiddleware } from '../middlewares/auth'
+import { clearCookies } from '../middlewares/cookies'
 
 const facebook = new Router()
 const github = new Router()
@@ -22,5 +23,6 @@ anon.post('/token', anonMiddleware())
 // Auth endpoints
 auth.use('/social', social.routes(), social.allowedMethods())
 auth.use('/anon', anon.routes(), anon.allowedMethods())
+auth.post('/logout', clearCookies())
 
 export default auth

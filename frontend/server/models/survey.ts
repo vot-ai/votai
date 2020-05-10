@@ -181,6 +181,16 @@ const surveyMethods = {
     }
     return data
   },
+  async reducedSerialize(this: ISurvey) {
+    const api = await this.getInterface()
+    const data = {
+      // API data
+      id: api.id,
+      name: api.name,
+      private: !!this.password
+    }
+    return data
+  },
   async updateSurvey(
     this: ISurvey,
     surveyData?: EditableSurvey,
@@ -271,6 +281,7 @@ export interface ISurvey
   createItem: typeof surveyMethods.createItem
   getAnnotators: typeof surveyMethods.getAnnotators
   serialize: typeof surveyMethods.serialize
+  reducedSerialize: typeof surveyMethods.reducedSerialize
   changePassword: typeof surveyMethods.changePassword
   updateSurvey: typeof surveyMethods.updateSurvey
 }

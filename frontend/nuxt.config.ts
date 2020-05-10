@@ -102,14 +102,15 @@ const config: Configuration = {
           login: { url: '/api/auth/anon/token', method: 'post' },
           refresh: { url: '/api/auth/anon/token', method: 'post' },
           user: { url: '/api/user', method: 'get' },
-          logout: false
+          logout: { url: '/api/auth/logout', method: 'post' }
         }
       },
       github: {
         responseType: 'code',
         endpoints: {
           token: `${process.env.API_URL}/api/auth/social/github`,
-          userInfo: '/api/user/'
+          userInfo: '/api/user/',
+          logout: { url: '/api/auth/logout', method: 'post' }
         },
         clientId: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET

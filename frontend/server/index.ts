@@ -18,6 +18,7 @@ import api from './routes'
 // Middlewares
 import { errorMiddleware } from './middlewares/error'
 import { authenticationMiddleware } from './middlewares/auth'
+import { loadApplicationCookies } from './middlewares/cookies'
 
 mongoose.connect(mongoConnectionString)
 mongoose.connection.on('error', consola.error)
@@ -53,6 +54,7 @@ app.use(
 )
 app.use(helmet())
 app.use(authenticationMiddleware())
+app.use(loadApplicationCookies())
 
 // Register base router
 app.use(router.routes())

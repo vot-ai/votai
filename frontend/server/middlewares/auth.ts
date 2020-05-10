@@ -82,7 +82,7 @@ export abstract class BaseAdapter<U> {
   generateJWT(user: U) {
     const data = this.serializeUser(user)
     const token = jwt.sign(data, process.env.JWT_SECRET || 'my_secret', {
-      expiresIn: parseInt('30')
+      expiresIn: parseInt(process.env.JWT_LIFETIME || '1800')
     })
     const refreshToken = jwt.sign(
       data,
