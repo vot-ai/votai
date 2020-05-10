@@ -8,8 +8,18 @@ import mongoose, {
 } from 'mongoose'
 import * as yup from 'yup'
 import bcrypt from 'bcryptjs'
-import { SurveyInterface, ItemInterface } from '../clients/pairwise'
-import { isObjectId } from './utils'
+import {
+  SurveyInterface,
+  ItemInterface,
+  NewSurvey,
+  NewItem,
+  NewAnnotator,
+  EditableSurvey
+} from '../clients/pairwise'
+import { RequestAuthenticatedUser } from '../types/requests'
+import { ErrorMessages } from '../types/responses'
+import { ValidationError } from '../errors'
+import { isObjectId, objectIdSchema } from './utils'
 import { IAnnotator, Annotator } from './annotator'
 import { IUser } from './user'
 
@@ -27,10 +37,25 @@ const SurveySchema: Schema = new Schema(
     apiUrl: { type: String, required: true },
     // Security attributes
     password: { type: String, required: false },
-    allowAnon: { type: Boolean, required: true }
+    allowAnon: { type: Boolean, required: false, default: false },
+    // Owner info
+    // Optional related user. If missing, the voter is "anonymous"
+    user: {
+      type: Schema.Types.ObjectId,
+      required: false,
+      ref: 'User',
+      sparse: true
+    },
+    // Optional uuid from the anon user
+    anonUser: { type: String, required: false, sparse: true }
   },
   { timestamps: true }
 )
+
+const passwordValidator = yup
+  .string()
+  .min(6)
+  .max(50)
 
 const surveySchemaValidator = yup.object().shape({
   apiId: yup.string().required(),
@@ -38,12 +63,10 @@ const surveySchemaValidator = yup.object().shape({
     .string()
     // .url()
     .required(),
-  password: yup
-    .string()
-    .min(6)
-    .max(50)
-    .notRequired(),
+  password: passwordValidator.notRequired(),
   allowAnon: yup.bool().required(),
+  user: objectIdSchema<IUser>().notRequired(),
+  anonUser: yup.string().notRequired(),
   // Meta fields
   createdAt: yup
     .date()
@@ -74,24 +97,39 @@ SurveySchema.post<ISurvey>('remove', async function(doc, next) {
   next()
 })
 
+function createAnnotator(
+  this: ISurvey,
+  user: RequestAuthenticatedUser,
+  annotatorData: NewAnnotator
+) {
+  return Annotator.createAnnotator(this, user, annotatorData)
+}
+
 /**
  * Survey instance methods
  */
 const surveyMethods = {
+  createAnnotator,
   passwordMatches(this: ISurvey, password: string) {
     return !this.password
       ? Promise.resolve(false)
       : bcrypt.compare(password, this.password)
   },
-  createAnnotator(this: ISurvey, user: IUser) {
-    return Annotator.createAnnotator(this, user)
-  },
-  createAnonAnnotator(this: ISurvey, userName: string, userUuid: string) {
-    if (!this.allowAnon) {
-      // TODO: Move error message somewhere else
-      throw new Error('This survey does not allow anon annotators')
+  async changePassword(
+    this: ISurvey,
+    oldPassword: string,
+    newPassword: string
+  ) {
+    const matches = await this.passwordMatches(oldPassword)
+    if (!matches) {
+      throw new ValidationError(
+        ErrorMessages.INVALID_PASSWORD,
+        'Could not change password. Old password is invalid'
+      )
     }
-    return Annotator.createAnonAnnotator(this, userName, userUuid)
+    const password = await passwordValidator.validate(newPassword)
+    this.password = password
+    return await this.save()
   },
   async removeAnnotator(
     this: ISurvey,
@@ -101,7 +139,10 @@ const surveyMethods = {
     if (isObjectId(annotator)) {
       const maybeAnnotator = await Annotator.findById(annotator)
       if (!maybeAnnotator) {
-        throw new Error('Annotator not found')
+        throw new ValidationError(
+          ErrorMessages.ANNOTATOR_NOT_FOUND,
+          'Annotator does not exist'
+        )
       }
       annotator = maybeAnnotator
     }
@@ -110,13 +151,50 @@ const surveyMethods = {
   getInterface(this: ISurvey) {
     return SurveyInterface.createInterface(this.apiId)
   },
-  createItem(this: ISurvey, name: string) {
-    return ItemInterface.create(this.apiId, { name })
+  createItem(this: ISurvey, itemData: NewItem) {
+    return ItemInterface.create(this.apiId, itemData)
   },
   getAnnotators(this: ISurvey) {
     return Annotator.find()
       .fromSurvey(this)
       .exec()
+  },
+  async serialize(this: ISurvey) {
+    const api = await this.getInterface()
+    const data = {
+      // API data
+      id: api.id,
+      name: api.name,
+      active: api.active,
+      max_time: api.max_time,
+      min_views: api.min_views,
+      allowConcurrent: api.allow_concurrent,
+      trustAnnotators: api.trust_annotators,
+      epsilon: api.epsilon,
+      gamma: api.gamma,
+      base_gamma: api.base_gamma,
+      tau: api.tau,
+      dynamic_gamma: api.dynamic_gamma,
+      // Local data
+      allowAnon: this.allowAnon,
+      private: !!this.password
+    }
+    return data
+  },
+  async updateSurvey(
+    this: ISurvey,
+    surveyData?: EditableSurvey,
+    allowAnon?: boolean
+  ) {
+    if (surveyData) {
+      const apiInterface = await this.getInterface()
+      await apiInterface.patch(surveyData)
+    }
+    if (typeof allowAnon !== 'undefined') {
+      this.allowAnon = allowAnon
+      await this.save()
+    }
+    return this
   }
 }
 
@@ -132,13 +210,24 @@ const surveyStatics = {
   },
   async createSurvey(
     this: ISurveyModel,
-    name: string,
-    allowAnon: boolean,
+    user: RequestAuthenticatedUser,
+    surveyData: NewSurvey,
+    allowAnon?: boolean,
     password?: string
   ) {
-    const survey = await SurveyInterface.create({ name })
-    const raw = { apiId: survey.id, apiUrl: survey.url, password, allowAnon }
-    return surveySchemaValidator.validate(raw).then(data => this.create(data))
+    const survey = await SurveyInterface.create(surveyData)
+    const data: Partial<ISurvey> = {
+      apiId: survey.id,
+      apiUrl: survey.url,
+      password,
+      allowAnon
+    }
+    if (user.isRegistered) {
+      data.user = user._id
+    } else {
+      data.anonUser = user.uuid
+    }
+    return this.create(data)
   }
 }
 
@@ -146,25 +235,27 @@ const surveyStatics = {
  * Survey query helpers
  */
 const surveyQueryHelpers = {
-  byApiId<T>(this: DocumentQuery<T, ISurvey>, apiId: string) {
+  byApiId<T extends DocumentQuery<any, ISurvey>>(this: T, apiId: string) {
     return this.where({ apiId })
   },
-  containsAnnotator<T>(this: DocumentQuery<T, ISurvey>, annotator: IAnnotator) {
+  containsAnnotator<T extends DocumentQuery<any, ISurvey>>(
+    this: T,
+    annotator: IAnnotator
+  ) {
     let id = annotator.survey
     if (!isObjectId(id)) {
       id = id._id as mongoose.Types.ObjectId
     }
     return this.where({ _id: id })
   },
-  fromUser<T>(
-    this: DocumentQuery<T, ISurvey>,
-    user: IUser | Types.ObjectId | string
+  fromUser<T extends DocumentQuery<any, ISurvey>>(
+    this: T,
+    user: RequestAuthenticatedUser
   ) {
-    if (typeof user === 'string') {
-      return this.where({ anonUser: user })
+    if (!user.isRegistered) {
+      return this.where({ anonUser: user.uuid })
     }
-    const userId = isObjectId(user) ? user : (user._id as Types.ObjectId)
-    return this.where({ user: userId })
+    return this.where({ user: user._id })
   }
 }
 
@@ -176,10 +267,12 @@ export interface ISurvey
     yup.InferType<typeof surveySchemaValidator> {
   passwordMatches: typeof surveyMethods.passwordMatches
   createAnnotator: typeof surveyMethods.createAnnotator
-  createAnonAnnotator: typeof surveyMethods.createAnonAnnotator
   getInterface: typeof surveyMethods.getInterface
   createItem: typeof surveyMethods.createItem
   getAnnotators: typeof surveyMethods.getAnnotators
+  serialize: typeof surveyMethods.serialize
+  changePassword: typeof surveyMethods.changePassword
+  updateSurvey: typeof surveyMethods.updateSurvey
 }
 /**
  * Type of the Survey Model
@@ -194,7 +287,9 @@ export interface ISurveyModel
 // Register interface and model methods
 SurveySchema.statics = surveyStatics
 SurveySchema.methods = surveyMethods
-SurveySchema.query = surveyQueryHelpers
+// SurveySchema.query = surveyQueryHelpers
+SurveySchema.query.byApiId = surveyQueryHelpers.byApiId
+SurveySchema.query.fromUser = surveyQueryHelpers.fromUser
 
 export const Survey = mongoose.model<ISurvey, ISurveyModel>(
   'Survey',

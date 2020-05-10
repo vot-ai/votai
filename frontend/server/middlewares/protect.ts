@@ -1,6 +1,6 @@
 import { Next } from 'koa'
 import { ContextWithState, UnknownUserState } from '../types/context'
-import { ResponseStatus, ResponseMessages } from '../types/responses'
+import { UnauthorizedError } from '../errors'
 import { isRegistered, isAuthenticated } from './auth'
 
 /**
@@ -14,8 +14,7 @@ export const loginRequired = () => async (
   if (isRegistered(unkownUser)) {
     await next()
   } else {
-    ctx.status = ResponseStatus.UNAUTHORIZED_ERROR
-    ctx.body = ResponseMessages.UNAUTHORIZED_ERROR
+    throw new UnauthorizedError()
   }
 }
 
@@ -30,8 +29,7 @@ export const authenticationRequired = () => async (
   if (isAuthenticated(unkownUser)) {
     await next()
   } else {
-    ctx.status = ResponseStatus.UNAUTHORIZED_ERROR
-    ctx.body = ResponseMessages.UNAUTHORIZED_ERROR
+    throw new UnauthorizedError()
   }
 }
 

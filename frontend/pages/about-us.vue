@@ -19,12 +19,5 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-export default Vue.extend({
-  nuxtI18n: {
-    paths: {
-      en: '/about-us',
-      pt: '/sobre'
-    }
-  }
-})
+export default Vue.extend({})
 </script>

@@ -16,6 +16,7 @@ import { mongoConnectionString } from './config'
 import api from './routes'
 
 // Middlewares
+import { errorMiddleware } from './middlewares/error'
 import { authenticationMiddleware } from './middlewares/auth'
 
 mongoose.connect(mongoConnectionString)
@@ -24,11 +25,17 @@ mongoose.connection.on('connected', () =>
   consola.success('Connected to mongo!')
 )
 
-const app = new Koa()
 const router = new Router()
+// API Routes
+router.use('/api', api.routes(), api.allowedMethods())
+
+// Create Koa App
+const app = new Koa()
 
 // Setup middlewares
+app.use(errorMiddleware())
 app.use(async (ctx: Koa.Context, next: Koa.Next) => {
+  // Disable body parser if the request was not to the API
   if (!ctx.url.startsWith('/api')) {
     ctx.disableBodyParser = true
   }
@@ -46,9 +53,6 @@ app.use(
 )
 app.use(helmet())
 app.use(authenticationMiddleware())
-
-// API Routes
-router.use('/api', api.routes(), api.allowedMethods())
 
 // Register base router
 app.use(router.routes())

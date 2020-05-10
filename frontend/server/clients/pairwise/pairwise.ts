@@ -14,7 +14,7 @@ import {
   NewItem,
   EditableItem,
   EditableAnnotator
-} from '../types/clients/pairwise'
+} from './types'
 
 export const pairwiseAxios = Axios.create({
   baseURL: 'http://backend:8000',

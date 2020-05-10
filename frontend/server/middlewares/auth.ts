@@ -11,7 +11,11 @@ import {
 } from '../types/context'
 import UserController from '../controllers/users'
 import { OAuthRequest, OAuthResponse } from '../types/oauth'
-import { TokenResponse, ResponseStatus } from '../types/responses'
+import {
+  TokenResponse,
+  ResponseStatus,
+  ErrorMessages
+} from '../types/responses'
 import { IUser, SerializedUser } from '../models/user'
 import {
   RequestRegisterdUser,
@@ -21,6 +25,12 @@ import {
 } from '../types/requests'
 import { Mutable } from '../types/utils'
 import { AnonUser } from '../models/anonUser'
+import {
+  ValidationError,
+  ServerError,
+  UnauthorizedError,
+  BaseRequestError
+} from '../errors'
 
 export abstract class BaseAdapter<U> {
   private readonly flowType: 'refresh_token' | 'access_token'
@@ -50,8 +60,15 @@ export abstract class BaseAdapter<U> {
   private validateRefreshToken() {
     const refreshToken = this.refreshToken || 'invalid'
     const secret = process.env.JWT_REFRESH_SECRET || 'invalid'
-    // TODO: This throws an error if invalid. Handle it properly
-    const parsed = jwt.verify(refreshToken, secret) as string | object | Buffer
+    let parsed
+    try {
+      parsed = jwt.verify(refreshToken, secret) as string | object | Buffer
+    } catch (err) {
+      throw new ValidationError(
+        ErrorMessages.INVALID_REFRESH_TOKEN,
+        err.message
+      )
+    }
     return parsed
   }
 
@@ -118,30 +135,38 @@ export abstract class BaseOAuthAdapter extends BaseAdapter<IUser> {
   protected async deserializeUser(serialized: SerializedUser) {
     const user = await UserController.findUserByEmail(serialized)
     if (!user) {
-      // TODO: Write better error message
-      throw new Error('No matching user found')
+      throw new ValidationError(
+        ErrorMessages.USER_NOT_FOUND,
+        'Could not find user on the DB'
+      )
     }
     return user
   }
 
   protected async fetchUser(accessToken: string) {
-    const response = await axios.get(this.userEndpoint, {
-      headers: {
-        Authorization: `${this.tokenType} ${accessToken}`,
-        Accept: 'application/json'
-      }
-    })
-    // TODO: Check if fetch user failed here
+    const response = await axios
+      .get(this.userEndpoint, {
+        headers: {
+          Authorization: `${this.tokenType} ${accessToken}`,
+          Accept: 'application/json'
+        }
+      })
+      .catch(e => {
+        throw new BaseRequestError(e)
+      })
     return response.data
   }
 
   protected abstract async cleanUser(user: any): Promise<UserData>
 
   protected async fetchAccessToken() {
-    const response = await axios.post(this.tokenEndpoint, this.oauthRequest, {
-      headers: { Accept: 'application/json' }
-    })
-    // TODO: Check if fetch token failed
+    const response = await axios
+      .post(this.tokenEndpoint, this.oauthRequest, {
+        headers: { Accept: 'application/json' }
+      })
+      .catch(e => {
+        throw new BaseRequestError(e)
+      })
     const oauthResponse: OAuthResponse = response.data
     return oauthResponse
   }
@@ -152,8 +177,10 @@ export abstract class BaseOAuthAdapter extends BaseAdapter<IUser> {
     const userData = await this.cleanUser(rawUser)
     const user = await UserController.getOrCreateUser(userData)
     if (!user) {
-      // TODO: Write better error message here
-      throw new Error('User not found')
+      throw new ServerError(
+        ErrorMessages.COULD_NOT_CREATE_USER,
+        'Could not create user'
+      )
     }
     return user
   }
@@ -163,8 +190,10 @@ export abstract class BaseOAuthAdapter extends BaseAdapter<IUser> {
     const validClientSecret =
       this.oauthRequest.client_secret === this.clientSecret
     if (!validClientId || !validClientSecret) {
-      // TODO: Write better error message
-      throw new Error('Invalid credentials')
+      throw new UnauthorizedError(
+        ErrorMessages.INVALID_CREDENTIALS,
+        'Credentials provded are invalid'
+      )
     }
   }
 }
@@ -221,7 +250,6 @@ export const authenticationMiddleware = () => async (
   ctx: Context,
   next: Next
 ) => {
-  debugger
   try {
     await koaJwt({ secret: process.env.JWT_SECRET || 'my_secret' })(ctx, () =>
       Promise.resolve()

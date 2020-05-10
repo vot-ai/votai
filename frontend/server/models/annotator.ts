@@ -8,11 +8,13 @@ import mongoose, {
 } from 'mongoose'
 import * as yup from 'yup'
 import consola from 'consola'
-import { AnnotatorInterface } from '../clients/pairwise'
+import { RequestAuthenticatedUser } from '../types/requests'
+import { NewAnnotator, AnnotatorInterface } from '../clients/pairwise'
+import { ErrorMessages } from '../types/responses'
+import { ServerError } from '../errors'
 import { IUser } from './user'
 import { ISurvey, Survey } from './survey'
 import { isObjectId, objectIdSchema } from './utils'
-
 /********************************************************************************
  ** Annotator
  ********************************************************************************/
@@ -74,7 +76,8 @@ AnnotatorSchema.post<IAnnotator>('remove', async function(
       .exec()
     if (!maybeSurvey) {
       return next(
-        Error(
+        new ServerError(
+          ErrorMessages.SURVEY_NOT_FOUND,
           `Could not find related Survey when deleting annotator ${doc.apiId}`
         )
       )
@@ -88,9 +91,7 @@ AnnotatorSchema.post<IAnnotator>('remove', async function(
       doc.apiId
     )
   } catch (e) {
-    consola.log(
-      'The following error was probably caused because the annotator does not exist anymore'
-    )
+    // Log but do not handle the error
     consola.error(e)
     return next()
   }
@@ -107,8 +108,10 @@ const annotatorMethods = {
     if (isObjectId(survey)) {
       const maybeSurvey = await Survey.findById(survey).exec()
       if (!maybeSurvey) {
-        // TODO: Think of a better error message and move it somewhere else
-        throw new Error('Survey not found')
+        throw new ServerError(
+          ErrorMessages.SURVEY_NOT_FOUND,
+          'Survey does not exist on the API'
+        )
       }
       survey = maybeSurvey
     }
@@ -116,54 +119,49 @@ const annotatorMethods = {
   }
 }
 
+async function createAnnotator(
+  this: IAnnotatorModel,
+  survey: ISurvey,
+  user: RequestAuthenticatedUser,
+  annotatorData: NewAnnotator
+) {
+  let annotator
+  let raw
+  if (user.isRegistered) {
+    const data = { ...annotatorData, name: user.name }
+    annotator = await AnnotatorInterface.create(survey.apiId, data)
+    raw = { user: user._id }
+  } else {
+    annotator = await AnnotatorInterface.create(survey.apiId, annotatorData)
+    raw = { anonUser: user.uuid }
+  }
+  raw = {
+    ...raw,
+    apiId: annotator.id,
+    apiUrl: annotator.url,
+    survey: survey._id
+  }
+  return await annotatorSchemaValidator
+    .validate(raw)
+    .then(data => this.create(data))
+}
+
 /**
  * Annotator model methods
  */
 const annotatorStatics = {
-  async createAnnotator(this: IAnnotatorModel, survey: ISurvey, user: IUser) {
-    const annotator = await AnnotatorInterface.create(survey.apiId, {
-      name: user.name
-    })
-    const raw = {
-      apiId: annotator.id,
-      apiUrl: annotator.url,
-      survey: survey._id,
-      user: user._id
-    }
-    return await annotatorSchemaValidator
-      .validate(raw)
-      .then(data => this.create(data))
-  },
-  async createAnonAnnotator(
-    this: IAnnotatorModel,
-    survey: ISurvey,
-    userName: string,
-    userUuid: string
-  ) {
-    const annotator = await AnnotatorInterface.create(survey.apiId, {
-      name: userName
-    })
-    const raw = {
-      apiId: annotator.id,
-      apiUrl: annotator.url,
-      survey: survey._id,
-      anonUser: userUuid
-    }
-    return await annotatorSchemaValidator
-      .validate(raw)
-      .then(data => this.create(data))
-  }
+  createAnnotator
 }
 
 /**
  * Annotator query helpers
  */
 const annotatorQueryHelpers = {
-  byApiId<T>(this: DocumentQuery<T, IAnnotator>, apiId: string) {
+  byApiId<T extends DocumentQuery<any, IAnnotator>>(this: T, apiId: string) {
     return this.where({ apiId })
   },
-  fromUser<T>(
-    this: DocumentQuery<T, IAnnotator>,
+  fromUser<T extends DocumentQuery<any, IAnnotator>>(
+    this: T,
     user: IUser | Types.ObjectId | string
   ) {
     if (typeof user === 'string') {
@@ -172,8 +170,8 @@ const annotatorQueryHelpers = {
     const userId = isObjectId(user) ? user : (user._id as Types.ObjectId)
     return this.where({ user: userId })
   },
-  fromSurvey<T>(
-    this: DocumentQuery<T, IAnnotator>,
+  fromSurvey<T extends DocumentQuery<any, IAnnotator>>(
+    this: T,
     survey: ISurvey | Types.ObjectId
   ) {
     const surveyId = isObjectId(survey)
@@ -202,7 +200,6 @@ export interface IAnnotator
 export interface IAnnotatorModel
   extends Model<IAnnotator, typeof annotatorQueryHelpers> {
   createAnnotator: typeof annotatorStatics.createAnnotator
-  createAnonAnnotator: typeof annotatorStatics.createAnonAnnotator
 }
 
 export const Annotator = mongoose.model<IAnnotator, IAnnotatorModel>(

@@ -26,10 +26,10 @@
      */
     {
       "type": "chrome",
-      "userDataDir": false,
+      "userDataDir": true,
       "request": "launch",
       "name": "Launch Frontend Client",
-      "url": "http://localhost:3000",
+      "url": "http://localhost",
       "webRoot": "${workspaceFolder}/frontend",
       "sourceMapPathOverrides": {
         "webpack:///*": "${webRoot}/*"
@@ -60,7 +60,10 @@
       "request": "attach",
       "sourceMaps": true,
       "localRoot": "${workspaceFolder}/frontend",
-      "remoteRoot": "/app"
+      "remoteRoot": "/app",
+      "sourceMapPathOverrides": {
+        "/app/*": "${workspaceRoot}/frontend/*"
+      }
     }
   ]
 }

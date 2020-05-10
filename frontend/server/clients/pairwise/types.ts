@@ -26,8 +26,11 @@ export type NewSurvey = {
   max_time?: number
   min_views?: number
   allow_concurrent?: boolean
-  gamma?: number
+  trust_annotators?: boolean
+  base_gamma?: number
   epsilon?: number
+  tau?: number
+  dynamic_gamma?: boolean
 }
 
 export type EditableSurvey = Partial<NewSurvey>
@@ -42,6 +45,11 @@ export type Survey = Required<NewSurvey> & {
   updated: string
   max_annotators: number
   max_items: number
+  max_budget: number
+  min_budget: number
+  budget: number
+  consumed_budget: number
+  gamma: number
 }
 
 /********************************************************************************
@@ -54,6 +62,8 @@ export type NewAnnotator = {
   name: string
   metadata?: Metadata
   active?: boolean
+  alpha?: number
+  beta?: number
 }
 
 export type EditableAnnotator = Partial<NewAnnotator>
@@ -66,8 +76,6 @@ export type Annotator = Required<NewAnnotator> & {
   previous: string
   vote: string
   skip: string
-  alpha: number
-  beta: number
   quality: number
 }
 

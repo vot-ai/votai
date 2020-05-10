@@ -1,0 +1,56 @@
+import { ResponseStatus, ResponseMessages } from './types/responses'
+
+export class BaseRequestError extends Error {
+  public errorMessage?: string
+  public errorBody?: any
+  public readonly status: number = ResponseStatus.OK
+  public logToConsole: boolean = true
+
+  constructor(error: Error)
+  constructor(message?: string, body?: any, status?: number)
+  constructor(messageOrError?: string | Error, body?: any, status?: number) {
+    super(
+      messageOrError instanceof Error ? messageOrError.message : messageOrError
+    )
+    let message
+    if (messageOrError instanceof Error) {
+      const error: Error & { status?: number } = messageOrError
+      status = error.status
+      message = messageOrError.message
+    } else {
+      message = messageOrError
+    }
+    this.errorMessage = message
+    this.errorBody = body
+    this.message = this.errorMessage || this.message
+    if (status) {
+      this.status = status
+    }
+  }
+}
+
+export class ValidationError extends BaseRequestError {
+  public errorMessage: string = ResponseMessages.VALIDATION_ERROR
+  public readonly status = ResponseStatus.VALIDATION_ERROR
+}
+
+export class UnauthorizedError extends BaseRequestError {
+  public errorMessage: string = ResponseMessages.UNAUTHORIZED_ERROR
+  public readonly status = ResponseStatus.UNAUTHORIZED_ERROR
+  public logToConsole = false
+}
+
+export class ForbiddenError extends BaseRequestError {
+  public errorMessage: string = ResponseMessages.FORBIDDEN_ERROR
+  public readonly status = ResponseStatus.FORBIDDEN_ERROR
+}
+
+export class ServerError extends BaseRequestError {
+  public errorMessage: string = ResponseMessages.SERVER_ERROR
+  public readonly status = ResponseStatus.SERVER_ERROR
+}
+
+export class NotFoundError extends BaseRequestError {
+  public errorMessage: string = ResponseMessages.NOT_FOUND
+  public readonly status = ResponseStatus.NOT_FOUND
+}

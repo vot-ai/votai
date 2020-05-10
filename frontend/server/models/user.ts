@@ -91,7 +91,7 @@ const userMethods = {
  * Query helpers for the user model
  */
 const userQueryHelpers = {
-  byEmail<T>(this: DocumentQuery<T, IUser>, email: string) {
+  byEmail<T extends DocumentQuery<any, IUser>>(this: T, email: string) {
     return this.findOne({ email })
   }
 }
