@@ -1,6 +1,5 @@
 import { Context, Next } from 'koa'
 import jwt from 'jsonwebtoken'
-import { ResponseMessages, ResponseStatus } from '../types/responses'
 
 const notEmptyObject = (obj: any): obj is object =>
   obj && obj.constructor === Object && Object.keys(obj).length !== 0
@@ -38,8 +37,7 @@ export const loadApplicationCookies = (path: string = 'user_cache') => async (
   }
 }
 
-export const clearCookies = () => (ctx: Context) => {
+export const clearCookies = () => (ctx: Context, next: Next) => {
   ctx.state.cookies = undefined
-  ctx.body = ResponseMessages.OK
-  ctx.status = ResponseStatus.OK
+  next()
 }
