@@ -12,7 +12,7 @@ export enum ResponseStatus {
 
 export enum ResponseMessages {
   VALIDATION_ERROR = 'Error validating the request data',
-  UNAUTHORIZED_ERROR = 'Authentication Error',
+  UNAUTHORIZED_ERROR = 'Authorization Error',
   FORBIDDEN_ERROR = "You don't have permission to do that",
   OK = 'Request successful',
   CREATED = 'Resource created',
