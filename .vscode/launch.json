@@ -61,6 +61,7 @@
       "sourceMaps": true,
       "localRoot": "${workspaceFolder}/frontend",
       "remoteRoot": "/app",
+      // https://github.com/Microsoft/vscode-recipes/issues/187#issuecomment-483814483
       "sourceMapPathOverrides": {
         "/app/*": "${workspaceRoot}/frontend/*"
       }
