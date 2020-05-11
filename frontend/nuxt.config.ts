@@ -102,7 +102,7 @@ const config: Configuration = {
           login: { url: '/api/auth/anon/token', method: 'post' },
           refresh: { url: '/api/auth/anon/token', method: 'post' },
           user: { url: '/api/user', method: 'get' },
-          logout: '/api/auth/logout'
+          logout: { url: '/api/auth/logout', method: 'get' }
         }
       },
       github: {
