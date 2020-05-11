@@ -36,9 +36,9 @@ export const authenticationRequired = () => async (
 /**
  * Allows any user
  */
-export const allowAny = () => (
+export const allowAny = () => async (
   _ctx: ContextWithState<UnknownUserState>,
   next: Next
 ) => {
-  next()
+  await next()
 }

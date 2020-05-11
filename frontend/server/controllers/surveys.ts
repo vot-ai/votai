@@ -14,7 +14,7 @@ import {
   ErrorMessages,
   ResponseMessages
 } from '../types/responses'
-import { ValidationError, NotFoundError } from '../errors'
+import { ValidationError, NotFoundError, ForbiddenError } from '../errors'
 
 const newSurveyValidator = yup.object().shape({
   name: yup.string().required(),
@@ -42,12 +42,19 @@ const newSurveyValidator = yup.object().shape({
 })
 
 const updateSurveyValidator = newSurveyValidator.clone().shape({
-  id: yup.string().required(),
   name: yup.string().notRequired()
 })
 
 const requestAccessValidator = yup.object().shape({
   password: yup
+    .string()
+    .min(6)
+    .max(50)
+    .required()
+})
+
+const changePasswordValidator = requestAccessValidator.clone().shape({
+  oldPassword: yup
     .string()
     .min(6)
     .max(50)
@@ -74,25 +81,76 @@ class SurveyController {
     ctx.status = ResponseStatus.OK
   }
 
-  public async update(ctx: ContextWithState<AuthenticatedUserState>) {
+  public async update(
+    ctx: ContextWithState<AuthenticatedUserState<SurveyState>>
+  ) {
     const user = ctx.state.user
-    const raw = ctx.request.body
+    const survey = ctx.state.survey
+    const isOwner = user.isRegistered
+      ? user._id === survey.user
+      : user.uuid === survey.anonUser
+    if (!isOwner) {
+      throw new ForbiddenError(
+        ErrorMessages.ACCESS_DENIED,
+        'You do not have write access to this survey'
+      )
+    }
     let data
     try {
-      data = await updateSurveyValidator.validate(raw)
+      data = await updateSurveyValidator.validate(ctx.request.body)
     } catch (e) {
       throw new ValidationError(ErrorMessages.COULD_NOT_UPDATE_SURVEY, e.errors)
     }
-    const survey = await Survey.findOne()
-      .fromUser(user)
-      .byApiId(data.id)
-    if (!survey) {
-      throw new NotFoundError(
-        ErrorMessages.SURVEY_NOT_FOUND,
-        'Survey does not exist or you do not have write access to it'
+
+    const updatedSurvey = await survey.updateSurvey(data, data.allowAnon)
+    ctx.body = await updatedSurvey.serialize()
+    ctx.status = ResponseStatus.OK
+  }
+
+  public async delete(
+    ctx: ContextWithState<AuthenticatedUserState<SurveyState>>
+  ) {
+    const user = ctx.state.user
+    const survey = ctx.state.survey
+    const isOwner = user.isRegistered
+      ? user._id === survey.user
+      : user.uuid === survey.anonUser
+    if (!isOwner) {
+      throw new ForbiddenError(
+        ErrorMessages.ACCESS_DENIED,
+        'You do not have write access to this survey'
       )
     }
-    const updatedSurvey = await survey.updateSurvey(data, data.allowAnon)
+    await survey.remove()
+    ctx.body = ResponseMessages.DELETED
+    ctx.status = ResponseStatus.DELETED
+  }
+
+  public async changePassword(
+    ctx: ContextWithState<AuthenticatedUserState<SurveyState>>
+  ) {
+    const user = ctx.state.user
+    const survey = ctx.state.survey
+    const isOwner = user.isRegistered
+      ? user._id === survey.user
+      : user.uuid === survey.anonUser
+    if (!isOwner) {
+      throw new ForbiddenError(
+        ErrorMessages.ACCESS_DENIED,
+        'You do not have write access to this survey'
+      )
+    }
+    let data
+    try {
+      data = await changePasswordValidator.validate(ctx.request.body)
+    } catch (e) {
+      throw new ValidationError(ErrorMessages.INVALID_PASSWORD, e.errors)
+    }
+
+    const updatedSurvey = await survey.changePassword(
+      data.oldPassword,
+      data.password
+    )
     ctx.body = await updatedSurvey.serialize()
     ctx.status = ResponseStatus.OK
   }
@@ -143,6 +201,28 @@ class SurveyController {
     // Else, return basic serialized data
     ctx.body = await survey.reducedSerialize()
     ctx.status = ResponseStatus.OK
+  }
+
+  public async listUserOwned(ctx: ContextWithState<AuthenticatedUserState>) {
+    const user = ctx.state.user
+    const userSurveys = await Survey.find()
+      .fromUser(user)
+      .sort('createdAt')
+      .exec()
+    ctx.body = await Promise.all(userSurveys.map(survey => survey.serialize()))
+    ctx.status = ResponseStatus.OK
+  }
+
+  public async listFromAnnotator(
+    ctx: ContextWithState<AuthenticatedUserState>
+  ) {
+    const user = ctx.state.user
+    const userSurveys = await Survey.find().containsAnnotator(user)
+    const serializedSurveys = await Promise.all(
+      userSurveys.map(survey => survey.serialize())
+    )
+    ctx.status = ResponseStatus.OK
+    ctx.body = serializedSurveys
   }
 
   public async requestAccess(

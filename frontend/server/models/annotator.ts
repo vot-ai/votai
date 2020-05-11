@@ -162,13 +162,12 @@ const annotatorQueryHelpers = {
   },
   fromUser<T extends DocumentQuery<any, IAnnotator>>(
     this: T,
-    user: IUser | Types.ObjectId | string
+    user: RequestAuthenticatedUser
   ) {
-    if (typeof user === 'string') {
-      return this.where({ anonUser: user })
+    if (!user.isRegistered) {
+      return this.where({ anonUser: user.uuid })
     }
-    const userId = isObjectId(user) ? user : (user._id as Types.ObjectId)
-    return this.where({ user: userId })
+    return this.where({ user: user._id })
   },
   fromSurvey<T extends DocumentQuery<any, IAnnotator>>(
     this: T,

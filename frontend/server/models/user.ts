@@ -5,6 +5,7 @@ import mongoose, {
   DocumentQuery,
   Model
 } from 'mongoose'
+import { RequestAuthenticatedUser } from '../types/requests'
 import { Annotator } from './annotator'
 
 /**
@@ -81,8 +82,12 @@ const userMethods = {
     return serialized
   },
   getAnnotators(this: IUser) {
+    const preUser = <any>this
+    preUser.isAuthenticated = true
+    preUser.isRegistered = true
+    const user = <RequestAuthenticatedUser>preUser
     return Annotator.findOne()
-      .fromUser(this)
+      .fromUser(user)
       .exec()
   }
 }

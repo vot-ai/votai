@@ -30,6 +30,7 @@ export enum ErrorMessages {
   INVALID_REFRESH_TOKEN = 'invalid_refresh_token',
   INVALID_PASSWORD = 'invalid_password',
   INVALID_CREDENTIALS = 'invalid_credentials',
+  ACCESS_DENIED = 'access_denied',
   USER_NOT_FOUND = 'user_not_found',
   SURVEY_NOT_FOUND = 'survey_not_found',
   ANNOTATOR_NOT_FOUND = 'annotator_not_found',

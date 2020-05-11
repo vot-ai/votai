@@ -208,6 +208,25 @@ const surveyMethods = {
   }
 }
 
+async function findByAnnotator(
+  this: ISurveyModel,
+  annotator: IAnnotator
+): Promise<ISurvey | null>
+async function findByAnnotator(
+  this: ISurveyModel,
+  user: RequestAuthenticatedUser
+): Promise<ISurvey[]>
+async function findByAnnotator(
+  this: ISurveyModel,
+  annotator: IAnnotator | RequestAuthenticatedUser
+) {
+  if ('isAuthenticated' in annotator) {
+    return this.find().containsAnnotator(annotator)
+  }
+  const survey = await this.findOne().containsAnnotator(annotator)
+  return survey
+}
+
 /**
  * Survey model methods
  */
@@ -215,9 +234,7 @@ const surveyStatics = {
   findByApiId(this: ISurveyModel, apiId: string) {
     return this.findOne().byApiId(apiId)
   },
-  findByAnnotator(this: ISurveyModel, annotator: IAnnotator) {
-    return this.findOne().containsAnnotator(annotator)
-  },
+  findByAnnotator,
   async createSurvey(
     this: ISurveyModel,
     user: RequestAuthenticatedUser,
@@ -241,6 +258,34 @@ const surveyStatics = {
   }
 }
 
+async function containsAnnotator<T extends DocumentQuery<any, ISurvey>>(
+  this: T,
+  annotator: IAnnotator
+): Promise<T>
+async function containsAnnotator<T extends DocumentQuery<any, ISurvey>>(
+  this: T,
+  user: RequestAuthenticatedUser
+): Promise<T>
+async function containsAnnotator<T extends DocumentQuery<any, ISurvey>>(
+  this: T,
+  annotatorOrUser: IAnnotator | RequestAuthenticatedUser
+) {
+  // Is user
+  if ('isAuthenticated' in annotatorOrUser) {
+    const user = annotatorOrUser
+    // Get all survey ids
+    const surveysIds = await Annotator.find()
+      .fromUser(user)
+      .distinct('survey')
+      .exec()
+    return Promise.resolve(this.where({ _id: { $in: surveysIds } }))
+  } else {
+    // Is annotator
+    const annotator = annotatorOrUser
+    return Promise.resolve(this.where({ _id: annotator.survey }))
+  }
+}
+
 /**
  * Survey query helpers
  */
@@ -248,16 +293,7 @@ const surveyQueryHelpers = {
   byApiId<T extends DocumentQuery<any, ISurvey>>(this: T, apiId: string) {
     return this.where({ apiId })
   },
-  containsAnnotator<T extends DocumentQuery<any, ISurvey>>(
-    this: T,
-    annotator: IAnnotator
-  ) {
-    let id = annotator.survey
-    if (!isObjectId(id)) {
-      id = id._id as mongoose.Types.ObjectId
-    }
-    return this.where({ _id: id })
-  },
+  containsAnnotator,
   fromUser<T extends DocumentQuery<any, ISurvey>>(
     this: T,
     user: RequestAuthenticatedUser
@@ -298,9 +334,7 @@ export interface ISurveyModel
 // Register interface and model methods
 SurveySchema.statics = surveyStatics
 SurveySchema.methods = surveyMethods
-// SurveySchema.query = surveyQueryHelpers
-SurveySchema.query.byApiId = surveyQueryHelpers.byApiId
-SurveySchema.query.fromUser = surveyQueryHelpers.fromUser
+SurveySchema.query = surveyQueryHelpers
 
 export const Survey = mongoose.model<ISurvey, ISurveyModel>(
   'Survey',

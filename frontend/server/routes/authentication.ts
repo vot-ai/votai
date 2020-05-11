@@ -4,6 +4,7 @@ import { githubAuthMiddleware } from '../middlewares/social'
 import { anonMiddleware } from '../middlewares/auth'
 import { clearCookies } from '../middlewares/cookies'
 import { ResponseMessages, ResponseStatus } from '../types/responses'
+import { allowAny } from '../middlewares/protect'
 
 const facebook = new Router()
 const github = new Router()
@@ -13,19 +14,19 @@ const auth = new Router()
 
 // Social providers
 // facebook.post('/', facebookLogin())
-github.post('/', githubAuthMiddleware())
+github.post('/', allowAny(), githubAuthMiddleware())
 
 // Social endpoints
 social.use('/facebook', facebook.routes(), facebook.allowedMethods())
 social.use('/github', github.routes(), github.allowedMethods())
 
 // Anonymous endpoints
-anon.post('/token', anonMiddleware())
+anon.post('/token', allowAny(), anonMiddleware())
 
 // Auth endpoints
 auth.use('/social', social.routes(), social.allowedMethods())
 auth.use('/anon', anon.routes(), anon.allowedMethods())
-auth.get('/logout', clearCookies(), (ctx: Context) => {
+auth.get('/logout', allowAny(), clearCookies(), (ctx: Context) => {
   if (ctx.query.logout_uri) {
     ctx.redirect(ctx.query.logout_uri)
     return
