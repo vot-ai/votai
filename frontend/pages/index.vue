@@ -53,9 +53,11 @@
           <a href="https://github.com/nuxt/nuxt.js" target="_blank">Nuxt GitHub</a>
         </v-card-text>
         <v-card-actions>
+          {{ $vuetify.theme.dark }}
           <v-spacer />
-          <v-btn color="primary" @click="localeChange">Locale</v-btn>
-          <v-btn color="primary" @click="$auth.logout()">Logout</v-btn>
+          <i-btn tile @click="$vuetify.theme.dark = !$vuetify.theme.dark">Locale</i-btn>
+          <i-btn depressed tile @click="$auth.logout()">Logout</i-btn>
+          <v-btn depressed tile @click="$auth.logout()">Logout</v-btn>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -64,7 +66,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'nuxt-composition-api'
-// import { useToast } from 'vue-toastification/composition'
+import { useToast } from 'vue-toastification/composition'
 
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
@@ -75,10 +77,9 @@ export default defineComponent({
     Logo,
     VuetifyLogo
   },
-  setup() {},
-  mounted() {
-    // @ts-ignore
-    window.auth = this.$auth
+  setup() {
+    const toast = useToast()
+    return { toast }
   },
   methods: {
     localeChange() {

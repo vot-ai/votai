@@ -1,0 +1,18 @@
+// Ref: https://github.com/nuxt-community/vuetify-module#customvariables
+@import '~vuetify/src/styles/styles.sass';
+
+$material-light: map-merge(
+  $material-light,
+  (
+    app-bar: map-get($shades, 'white'),
+    background: map-get($shades, 'white')
+  )
+);
+
+$material-dark: map-merge(
+  $material-dark,
+  (
+    app-bar: map-get($shades, 'black'),
+    background: map-get($shades, 'black')
+  )
+);

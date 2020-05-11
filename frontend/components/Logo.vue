@@ -79,5 +79,11 @@
 </style>
 <script lang="ts">
 import Vue from 'vue'
-export default Vue.extend({})
+export default Vue.extend({
+  computed: {
+    abc() {
+      return this.$vuetify.theme.dark
+    }
+  }
+})
 </script>
