@@ -3,13 +3,18 @@ import { Module, VuexModule, Mutation } from 'vuex-module-decorators'
 @Module({
   name: 'preferences',
   stateFactory: true,
-  namespaced: true,
+  namespaced: true
 })
 export default class Preferences extends VuexModule {
-  language = 'pt-BR'
+  dark = false
 
   @Mutation
-  changeLanguage(language: string) {
-    this.language = language
+  changeDark(mode: boolean) {
+    this.dark = mode
+  }
+
+  @Mutation
+  toggleDark() {
+    this.dark = !this.dark
   }
 }

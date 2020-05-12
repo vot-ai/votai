@@ -14,7 +14,7 @@ const frontendSecrets = getSecrets({
 process.env = { ...process.env, ...socialProviderSecrets, ...frontendSecrets }
 
 const config: Configuration = {
-  mode: 'universal',
+  mode: 'spa',
   server: {
     port: 3000,
     host: '0.0.0.0'
@@ -50,7 +50,8 @@ const config: Configuration = {
    */
   plugins: [
     { src: '~/plugins/vuex-persist', ssr: false },
-    '~/plugins/components'
+    '~/plugins/components',
+    '~/plugins/accessors'
   ],
   /*
    ** Nuxt.js dev-modules

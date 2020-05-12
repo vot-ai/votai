@@ -13,6 +13,7 @@ $material-dark: map-merge(
   $material-dark,
   (
     app-bar: map-get($shades, 'black'),
-    background: map-get($shades, 'black')
+    background: map-get($shades, 'black'),
+    navigation-drawer: map-get($shades, 'black')
   )
 );
