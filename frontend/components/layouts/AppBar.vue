@@ -1,13 +1,5 @@
 <template>
-  <v-app-bar
-    v-bind="$attrs"
-    hide-on-scroll
-    scroll-threshold="80"
-    elevate-on-scroll
-    app
-    height="80"
-    v-on="$listeners"
-  >
+  <v-app-bar v-bind="$attrs" hide-on-scroll elevate-on-scroll app height="80" v-on="$listeners">
     <v-app-bar-nav-icon class="d-md-none" @click.stop="toggleDrawer" />
     <v-container class="pa-0">
       <v-row justify="center" align-center>
@@ -22,10 +14,12 @@
 
 <script lang="ts">
 import { defineComponent } from 'nuxt-composition-api'
-import { useDrawer } from '../../hooks/app'
+import { useDrawer } from '~/hooks/app'
+import { useInvertedTheme } from '~/hooks/vuetify'
 
 export default defineComponent({
   setup() {
+    useInvertedTheme()
     const [, toggleDrawer] = useDrawer()
     return { toggleDrawer }
   }

@@ -14,6 +14,28 @@
         <v-col xs="12" sm="10" md="8">content here</v-col>
         <v-col xs="12" sm="10" md="8">content here</v-col>
         <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" sm="10" md="8">content here</v-col>
       </v-row>
     </v-container>
   </div>

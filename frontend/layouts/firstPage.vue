@@ -1,6 +1,6 @@
 <template>
   <base-layout>
-    <app-bar v-scroll="onScroll" :color="transparentColor" />
+    <app-bar />
     <v-content>
       <nuxt />
     </v-content>
