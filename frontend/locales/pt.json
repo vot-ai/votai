@@ -1,0 +1,48 @@
+{
+  "index": {
+    "headerPt2": "s revolucionário",
+    "headerPt1": "sistema de voto",
+    "create-survey": "Crie uma pesquisa de graça",
+    "create-survey-button": "Criar pesquisa",
+    "join-survey": "Participe de uma pesquisa existente"
+  },
+  "app-bar": {
+    "about": "sobre",
+    "create": "criar",
+    "dark-theme": "tema escuro",
+    "light-theme": "tema claro",
+    "vote": "votar",
+    "you": "você"
+  },
+  "nav-drawer": {
+    "anonymous": "Anônimo"
+  },
+  "login": {
+    "anon-button": "Login Anônimo",
+    "github-button": "Entre com GitHub",
+    "password-input": {
+      "placeholder": "Senha da Pesquisa",
+      "wrong-password": "Senha incorreta",
+      "submit": "Enviar"
+    },
+    "body-1": "Contas permitem que você acompanhe suas pesquisas e votos.",
+    "header": "Cadastre-se ou faça login na sua conta",
+    "body-2": {
+      "anonymous": "anônimo",
+      "left": "Você também pode criar contas ",
+      "right": ", acessíveis apenas no navegador atual e perdidas permanentemente após o logout."
+    }
+  },
+  "logout": "sair",
+  "language": "idioma",
+  "login-button": "entrar",
+  "search-survey-input": {
+    "placeholder": "ID da Pesquisa",
+    "survey-not-found-error": "Pesquisa não encontrada"
+  },
+  "vote": {
+    "requires-auth": "Você precisa entrar para votar",
+    "requires-password": "Essa pesquisa é protegida por senha",
+    "survey-not-found": "Pesquisa não encontrada"
+  }
+}

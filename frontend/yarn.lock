@@ -1791,6 +1791,13 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-7.0.3.tgz#45cd03e98e758f8581c79c535afbd4fc27ba7ac8"
   integrity sha512-PUdqTZVrNYTNcIhLHkiaYzoOIaUi5LFg/XLerAdgvwQrUCx+oSbtoBze1AMyvYbcwzUSNC+Isl58SM4Sm/6COw==
 
+"@types/vue-the-mask@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@types/vue-the-mask/-/vue-the-mask-0.11.0.tgz#ce7016234d251dcbb29193cc733b11c3b1f6160a"
+  integrity sha512-rYw+eoWNjy4r5RJJBXJFlR/A0mNpU4yoAKVHHBYmL4dMD0sSpLYhabsVKtO+m2OioH1XRFQNRsw7HPDqZPV2Xg==
+  dependencies:
+    vue ">=2.6.10"
+
 "@types/webpack-bundle-analyzer@^2.13.3":
   version "2.13.3"
   resolved "https://registry.yarnpkg.com/@types/webpack-bundle-analyzer/-/webpack-bundle-analyzer-2.13.3.tgz#820c8f734e171f081cbf02d889b9cda687cc89dd"
@@ -2259,6 +2266,11 @@ alphanum-sort@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
+
+animate.css@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/animate.css/-/animate.css-4.1.0.tgz#dec2aabe4babfc6f6777f9a5cccd132838729b50"
+  integrity sha512-0aVcfWDeU9ykV6vjn1P67ZSs01jxoUQZCGaYbkk0SIIelIG8kUdLrIkua1+VabHfTtsSivDRMMn0ILPvZum2gw==
 
 ansi-align@^2.0.0:
   version "2.0.0"
@@ -8072,12 +8084,13 @@ num2fraction@^1.2.2:
   resolved "https://registry.yarnpkg.com/num2fraction/-/num2fraction-1.2.2.tgz#6f682b6a027a4e9ddfa4564cd2589d1d4e669ede"
   integrity sha1-b2gragJ6Tp3fpFZM0lidHU5mnt4=
 
-nuxt-composition-api@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/nuxt-composition-api/-/nuxt-composition-api-0.3.0.tgz#e225f59fa1393f1e39dc24c217910dc9d6f57d68"
-  integrity sha512-u1UB3474DnE1PzcmySdx5A4JR6qlSfyrPZZTKEstbtJTOlkxC60O5U9bg1RXMi4KmSByoz3TmOZFcwPA/gUbHg==
+nuxt-composition-api@^0.6:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/nuxt-composition-api/-/nuxt-composition-api-0.6.3.tgz#ea89f88fb381997911e01a14a38507515c3153be"
+  integrity sha512-UB+f63bzgnvM+Zz7h77OlkzD4flkpacy+Ho4W6d0gEGql0GI8+/chu16NZ7NlgCaVpmj5s84VhT7HmI6h3kKRw==
   dependencies:
     "@vue/composition-api" "^0.5.0"
+    defu "^2.0.2"
 
 nuxt-i18n@^6.11.0:
   version "6.11.0"
@@ -11568,12 +11581,17 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
+vue-the-mask@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/vue-the-mask/-/vue-the-mask-0.11.1.tgz#91ee01008354ae57bccc79bb61b65f32d971d9d5"
+  integrity sha512-UquSfnSWejD0zAfcD+3jJ1chUAkOAyoxya9Lxh9acCRtrlmGcAIvd0cQYraWqKenbuZJUdum+S174atv2AuEHQ==
+
 vue-toastification@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/vue-toastification/-/vue-toastification-1.7.0.tgz#0032dd91decdbc7a6c69f47e8576df632e951f90"
   integrity sha512-repTMVuInRK9lk0ikxZTo2jc/bJaVdeqYTM6sZpKopB689UXp75vUysmCVj2GfP9E/2jsS7M+0ysByHsbV3Ybg==
 
-vue@^2.6.11:
+vue@>=2.6.10, vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==

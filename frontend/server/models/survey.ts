@@ -187,7 +187,8 @@ const surveyMethods = {
       // API data
       id: api.id,
       name: api.name,
-      private: !!this.password
+      private: !!this.password,
+      allowAnon: this.allowAnon
     }
     return data
   },

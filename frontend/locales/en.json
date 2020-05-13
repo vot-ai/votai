@@ -1,0 +1,48 @@
+{
+  "index": {
+    "headerPt1": "revolutionary v",
+    "headerPt2": "oting system",
+    "join-survey": "Join an existing survey",
+    "create-survey": "Create a new survey for free",
+    "create-survey-button": "create survey"
+  },
+  "app-bar": {
+    "about": "about",
+    "light-theme": "light theme",
+    "dark-theme": "dark theme",
+    "you": "you",
+    "create": "create",
+    "vote": "vote"
+  },
+  "nav-drawer": {
+    "anonymous": "Anonymous"
+  },
+  "logout": "logout",
+  "login": {
+    "github-button": "Login with GitHub",
+    "anon-button": "Anonymous Login",
+    "password-input": {
+      "placeholder": "Survey's password",
+      "wrong-password": "Wrong password",
+      "submit": "Submit"
+    },
+    "header": "Signup or Login to your account",
+    "body-1": "Accounts allow you to keep track of your surveys and votes.",
+    "body-2": {
+      "anonymous": "anonymous",
+      "left": "You may also create ",
+      "right": " accounts, which are only accessible from your current browser and are permanently lost once you logout."
+    }
+  },
+  "language": "language",
+  "search-survey-input": {
+    "placeholder": "Survey's ID",
+    "survey-not-found-error": "Survey not found"
+  },
+  "login-button": "login",
+  "vote": {
+    "requires-auth": "You need to login to vote",
+    "requires-password": "This survey is password-protected",
+    "survey-not-found": "Survey not found"
+  }
+}

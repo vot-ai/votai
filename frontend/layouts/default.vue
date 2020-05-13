@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'nuxt-composition-api'
-import BaseLayout from './baseLayout.vue'
+import BaseLayout from './BaseLayout.vue'
 import AppBar from '~/components/layouts/AppBar.vue'
 
 export default defineComponent({

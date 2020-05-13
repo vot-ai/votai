@@ -162,6 +162,12 @@ class SurveyController {
   ) => {
     const survey = await Survey.findByApiId(surveyId)
     if (!survey) {
+      // Throttle response
+      await new Promise(resolve =>
+        setTimeout(() => {
+          resolve()
+        }, 1000)
+      )
       throw new NotFoundError(
         ErrorMessages.SURVEY_NOT_FOUND,
         `Survey ${surveyId} does not exist or you do not have access to it`
@@ -178,10 +184,7 @@ class SurveyController {
   ) {
     const user = ctx.state.user
     const survey = ctx.state.survey
-    const hasAccess =
-      !!ctx.state.cookies.surveyAccess &&
-      ctx.state.cookies.surveyAccess.includes(survey.apiId)
-    // Check if is the owner
+    // Is it the owner?
     if (user.isAuthenticated) {
       const isOwner = user.isRegistered
         ? survey.user === user._id
@@ -192,7 +195,24 @@ class SurveyController {
         return
       }
     }
-    // Or has access
+    // Is it public?
+    if (typeof survey.password === 'undefined') {
+      // Can non registered or is the user registered?
+      if (survey.allowAnon || user.isRegistered) {
+        ctx.body = await survey.serialize()
+        ctx.status = ResponseStatus.OK
+        return
+      }
+      // Only give basic access
+      ctx.body = await survey.reducedSerialize()
+      ctx.status = ResponseStatus.OK
+      return
+    }
+    // Does the user have access?
+    const hasAccess =
+      user.isAuthenticated &&
+      !!ctx.state.cookies.surveyAccess &&
+      ctx.state.cookies.surveyAccess.includes(survey.apiId)
     if (hasAccess) {
       ctx.body = await survey.serialize()
       ctx.status = ResponseStatus.OK

@@ -3,7 +3,7 @@
     <index-banner />
     <v-container>
       <v-row justify="center" align-center>
-        <v-col xs="12" sm="10" md="8">content here</v-col>
+        <v-col xs="12" lg="10" xl="8" class="d-flex">hey</v-col>
         <v-col xs="12" sm="10" md="8">content here</v-col>
         <v-col xs="12" sm="10" md="8">content here</v-col>
         <v-col xs="12" sm="10" md="8">content here</v-col>
@@ -49,6 +49,7 @@ import IndexBanner from '~/components/index/IndexBanner.vue'
 
 export default defineComponent({
   ...{ auth: false },
+  name: 'Index',
   layout: 'firstPage',
   components: {
     IndexBanner

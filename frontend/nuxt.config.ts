@@ -19,6 +19,9 @@ const config: Configuration = {
     port: 3000,
     host: '0.0.0.0'
   },
+  features: {
+    transitions: false
+  },
 
   /*
    ** Headers of the page
@@ -35,7 +38,14 @@ const config: Configuration = {
         content: process.env.npm_package_description || ''
       }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href: 'https://cdn.jsdelivr.net/npm/animate.css@3.5.1'
+      }
+    ]
   },
   /*
    ** Customize the progress-bar color
@@ -44,14 +54,15 @@ const config: Configuration = {
   /*
    ** Global CSS
    */
-  css: ['@/assets/scss/fonts.scss'],
+  css: ['@/assets/scss/fonts.scss', '@/assets/scss/global.scss'],
   /*
    ** Plugins to load before mounting the App
    */
   plugins: [
     { src: '~/plugins/vuex-persist', ssr: false },
     '~/plugins/components',
-    '~/plugins/accessors'
+    '~/plugins/accessors',
+    '~/plugins/vue-the-mask'
   ],
   /*
    ** Nuxt.js dev-modules
@@ -133,8 +144,8 @@ const config: Configuration = {
     lazy: true,
     langDir: 'locales/',
     locales: [
-      { code: 'en', iso: 'en-US', file: 'en.ts' },
-      { code: 'pt', iso: 'pt-BR', file: 'pt.ts' }
+      { code: 'en', iso: 'en-US', file: 'en.json' },
+      { code: 'pt', iso: 'pt-BR', file: 'pt.json' }
     ],
     strategy: 'no_prefix',
     defaultLocale: 'pt',

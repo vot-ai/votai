@@ -1,13 +1,7 @@
 {
   "prettier.configPath": "./frontend/.prettierrc",
-  "eslint.workingDirectories": [
-    "./frontend"
-  ],
-  "eslint.validate": [
-    "typescript",
-    "javascript",
-    "vue"
-  ],
+  "eslint.workingDirectories": ["./frontend"],
+  "eslint.validate": ["typescript", "javascript", "vue"],
   "editor.formatOnSave": true,
   "python.formatting.provider": "black",
   "python.linting.enabled": true,
@@ -32,5 +26,9 @@
     "--warn-return-any",
     "--no-implicit-reexport",
     "--strict-equality"
-  ]
+  ],
+  "i18n-ally.localesPaths": ["frontend/locales"],
+  "i18n-ally.editor.preferEditor": true,
+  "i18n-ally.enabledFrameworks": ["vue"],
+  "i18n-ally.keystyle": "nested"
 }
