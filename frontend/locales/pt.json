@@ -43,6 +43,8 @@
   "vote": {
     "requires-auth": "Você precisa entrar para votar",
     "requires-password": "Essa pesquisa é protegida por senha",
-    "survey-not-found": "Pesquisa não encontrada"
+    "survey-not-found": "Pesquisa não encontrada",
+    "header": "Participe de uma pesquisa existente",
+    "body": "Cole o ID da pesquisa para participar"
   }
 }

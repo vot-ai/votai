@@ -43,6 +43,8 @@
   "vote": {
     "requires-auth": "You need to login to vote",
     "requires-password": "This survey is password-protected",
-    "survey-not-found": "Survey not found"
+    "survey-not-found": "Survey not found",
+    "header": "Join an existing survey",
+    "body": "Paste the Survey's ID to join it"
   }
 }

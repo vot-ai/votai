@@ -1,5 +1,13 @@
 <template>
-  <v-app-bar v-bind="$attrs" hide-on-scroll elevate-on-scroll app height="80" v-on="$listeners">
+  <v-app-bar
+    v-bind="$attrs"
+    hide-on-scroll
+    elevate-on-scroll
+    scroll-threshold="20px"
+    app
+    height="80"
+    v-on="$listeners"
+  >
     <v-app-bar-nav-icon class="d-md-none" @click.stop="toggleDrawer" />
     <v-container class="pa-0">
       <v-row justify="center" align="center" no-gutters>
