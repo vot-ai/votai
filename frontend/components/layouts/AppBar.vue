@@ -3,7 +3,7 @@
     v-bind="$attrs"
     hide-on-scroll
     elevate-on-scroll
-    scroll-threshold="20px"
+    scroll-threshold="20"
     app
     height="80"
     v-on="$listeners"
@@ -66,13 +66,13 @@
 <script lang="ts">
 import { defineComponent, computed } from 'nuxt-composition-api'
 import { useDrawer } from '~/hooks/app'
-import { useInvertedTheme, useDarkTheme } from '~/hooks/vuetify'
+import { useDarkTheme } from '~/hooks/vuetify'
 import { useAuth } from '~/hooks/auth'
 import { useI18n } from '~/hooks/i18n'
 
 export default defineComponent({
   setup() {
-    useInvertedTheme()
+    // useInvertedTheme()
     const [, toggleDrawer] = useDrawer()
     const auth = useAuth()
     const i18n = useI18n()
@@ -134,5 +134,8 @@ export default defineComponent({
   font-family: 'Major Mono Display', monospace;
   font-size: 3rem;
   cursor: pointer;
+}
+.v-app-bar--is-scrolled.theme--dark {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 </style>
