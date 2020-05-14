@@ -65,6 +65,11 @@ export interface SerializedUser {
   updatedAt: Date
 }
 
+export type SerializedUserBasic = Pick<
+  SerializedUser,
+  'email' | 'userId' | 'name'
+>
+
 const userMethods = {
   serialize(this: IUser) {
     const userObject = this.toObject()
@@ -78,6 +83,15 @@ const userMethods = {
       identities: userObject.identities,
       createdAt: userObject.createdAt,
       updatedAt: userObject.updatedAt
+    }
+    return serialized
+  },
+  serializeBasic(this: IUser) {
+    const userObject = this.toObject()
+    const serialized: SerializedUserBasic = {
+      email: userObject.email,
+      userId: userObject.userId,
+      name: userObject.name
     }
     return serialized
   },
@@ -110,6 +124,7 @@ const userStatics = {}
 export interface IUser extends Document, SerializedUser {
   identities: IConnection[]
   serialize: typeof userMethods.serialize
+  serializeBasic: typeof userMethods.serializeBasic
 }
 
 /**

@@ -16,7 +16,7 @@ import {
   ResponseStatus,
   ErrorMessages
 } from '../types/responses'
-import { IUser, SerializedUser } from '../models/user'
+import { IUser, SerializedUserBasic } from '../models/user'
 import {
   RequestRegisterdUser,
   RequestUnknownUser,
@@ -129,10 +129,10 @@ export abstract class BaseOAuthAdapter extends BaseAdapter<IUser> {
   }
 
   protected serializeUser(user: IUser) {
-    return user.serialize()
+    return user.serializeBasic()
   }
 
-  protected async deserializeUser(serialized: SerializedUser) {
+  protected async deserializeUser(serialized: SerializedUserBasic) {
     const user = await UserController.findUserByEmail(serialized)
     if (!user) {
       throw new ValidationError(
