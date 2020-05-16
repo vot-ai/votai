@@ -103,8 +103,20 @@ class IgnoreSerializer(PrefetchMixin, serializers.ModelSerializer):
 
     class Meta:
         model = Annotator
-        fields = ["current", "previous", "vote", "skip"]
-        read_only_fields = ["current", "previous", "vote", "skip"]
+        fields = [
+            "current",
+            "previous",
+            "vote",
+            "skip",
+            "items_left",
+        ]
+        read_only_fields = [
+            "current",
+            "previous",
+            "vote",
+            "skip",
+            "items_left",
+        ]
         select_related_fields = [
             "current",
             "current__survey",

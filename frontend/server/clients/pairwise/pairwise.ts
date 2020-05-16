@@ -401,6 +401,9 @@ export class AnnotatorInterface extends BaseInterface<Annotator> {
 
   async skip() {
     const response = await this.client.annotatorSkip(this.id, this.surveyId)
+    this.self.items_left = response.items_left
+    // @ts-ignore
+    this.items_left = response.items_left
     if (response.current) {
       this._current = await ItemInterface.createInterface(
         this.surveyId,
@@ -422,6 +425,9 @@ export class AnnotatorInterface extends BaseInterface<Annotator> {
       this.surveyId,
       currentWins
     )
+    this.self.items_left = response.items_left
+    // @ts-ignore
+    this.items_left = response.items_left
     if (response.current) {
       this._current = await ItemInterface.createInterface(
         this.surveyId,

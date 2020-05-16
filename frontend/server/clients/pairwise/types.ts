@@ -87,6 +87,7 @@ export type AnnotatorActionResponse = {
   previous: Item | null
   vote: string
   skip: string
+  items_left: number
 }
 
 /********************************************************************************

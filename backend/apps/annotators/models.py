@@ -47,7 +47,9 @@ class Annotator(models.Model):
         # items_left might be annotated into the object by the viewset
         if getattr(self, "sql_items_left", None) is not None:
             return self.sql_items_left
-        return self.survey.items.count() - self.viewed.count()
+        return (
+            self.survey.items.count() - self.labels.count() - self.ignored.count() - 1
+        )
 
     def update_confidence(self, winner: Item, loser: Item) -> None:
         new_confidence, _ = update_annotator(winner.score, loser.score, self.confidence)

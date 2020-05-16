@@ -31,17 +31,20 @@ class SurveyAnnotatorViewset(
     ownership_field = "survey.owner"
 
     serializer_class = AnnotatorSerializer
-    queryset = Annotator.objects.all().annotate(
-        sql_items_left=Count("survey__items", distinct=True)
-        - Count("labels", distinct=True)
-        - Count("ignored", distinct=True)
-    )
+    queryset = Annotator.objects.all()
 
     def get_queryset(self) -> QueryType[Annotator]:
         survey_uuid = self.kwargs.get("survey_id")
         qs: QueryType[Annotator] = super().get_queryset().filter(
             survey__uuid=survey_uuid
         )
+        if self.action in ["retrieve", "list"]:
+            qs = qs.annotate(
+                sql_items_left=Count("survey__items", distinct=True)
+                - Count("labels", distinct=True)
+                - Count("ignored", distinct=True)
+                - 1
+            )
         return qs
 
     def get_serializer_class(self) -> Any:
