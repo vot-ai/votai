@@ -69,7 +69,7 @@
               :waiting="!state.annotator.current"
               :last="state.annotator.itemsLeft === 0"
               :loading="state.loading"
-              @selected="vote(true)"
+              @selected="vote(false)"
             />
           </v-col>
         </transition-group>
