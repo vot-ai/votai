@@ -13,7 +13,9 @@ export interface ListResponse<T> {
 
 export type SurveyId = string
 
-type MetadataKey = string | number | Metadata
+// TODO: Revert this. Vue cant handle recursion
+// type MetadataKey = string | number | Metadata
+type MetadataKey = any
 
 export type Metadata = {
   [key: string]: MetadataKey | MetadataKey[]
@@ -72,11 +74,12 @@ export type Annotator = Required<NewAnnotator> & {
   url: string
   id: string
   survey: string
-  current: string
-  previous: string
+  current: string | null
+  previous: string | null
   vote: string
   skip: string
   quality: number
+  items_left: number
 }
 
 export type AnnotatorActionResponse = {

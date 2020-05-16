@@ -2,6 +2,7 @@ import { Context, DefaultState } from 'koa'
 import { IUser, SerializedUser } from '../models/user'
 import { AnonUser } from '../models/anonUser'
 import { ISurvey } from '../models/survey'
+import { IAnnotator } from '../models/annotator'
 import { OAuthRequest, OAuthResponse } from './oauth'
 import {
   RequestAnonUser,
@@ -80,6 +81,10 @@ export type OAuthResponseState<S extends DefaultState = DefaultState> = S & {
 
 export type SurveyState<S extends DefaultState = DefaultState> = S & {
   survey: ISurvey
+}
+
+export type AnnotatorState<S extends DefaultState = DefaultState> = S & {
+  annotator: IAnnotator
 }
 
 export type BaseCookieState<S extends DefaultState = DefaultState> = S

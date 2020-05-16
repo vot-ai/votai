@@ -36,5 +36,6 @@ export enum ErrorMessages {
   ANNOTATOR_NOT_FOUND = 'annotator_not_found',
   COULD_NOT_CREATE_USER = 'could_not_create_user',
   COULD_NOT_CREATE_SURVEY = 'could_not_create_survey',
-  COULD_NOT_UPDATE_SURVEY = 'could_not_update_survey'
+  COULD_NOT_UPDATE_SURVEY = 'could_not_update_survey',
+  COULD_NOT_VOTE = 'could_not_vote'
 }

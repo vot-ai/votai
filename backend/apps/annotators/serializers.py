@@ -65,6 +65,7 @@ class AnnotatorSerializer(
             "alpha",
             "beta",
             "quality",
+            "items_left",
         ]
         read_only_fields = [
             "id",
@@ -74,6 +75,7 @@ class AnnotatorSerializer(
             "quality",
             "vote",
             "skip",
+            "items_left",
         ]
         select_related_fields = [
             "survey",

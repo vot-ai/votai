@@ -9,7 +9,12 @@ import mongoose, {
 import * as yup from 'yup'
 import consola from 'consola'
 import { RequestAuthenticatedUser } from '../types/requests'
-import { NewAnnotator, AnnotatorInterface } from '../clients/pairwise'
+import {
+  NewAnnotator,
+  AnnotatorInterface,
+  ItemInterface,
+  Item
+} from '../clients/pairwise'
 import { ErrorMessages } from '../types/responses'
 import { ServerError } from '../errors'
 import { IUser } from './user'
@@ -103,7 +108,7 @@ AnnotatorSchema.post<IAnnotator>('remove', async function(
  * Annotator instance methods
  */
 const annotatorMethods = {
-  async getInterface(this: IAnnotator) {
+  async getFreshInterface(this: IAnnotator) {
     let survey = this.survey
     if (isObjectId(survey)) {
       const maybeSurvey = await Survey.findById(survey).exec()
@@ -115,7 +120,65 @@ const annotatorMethods = {
       }
       survey = maybeSurvey
     }
-    return await AnnotatorInterface.createInterface(survey.apiId, this.apiId)
+    const annotatorInterface = await AnnotatorInterface.createInterface(
+      survey.apiId,
+      this.apiId
+    )
+    return annotatorInterface
+  },
+  async getInterface(this: IAnnotator) {
+    let annotatorInterface
+    if (!this._resolvedInterface) {
+      annotatorInterface = await this.getFreshInterface()
+      // @ts-ignore: Cache for the future
+      this._resolvedInterface = annotatorInterface
+    } else {
+      annotatorInterface = this._resolvedInterface
+    }
+    return annotatorInterface
+  },
+  serializeItem(this: IAnnotator, item: (ItemInterface & Item) | null) {
+    if (!item) {
+      return null
+    }
+    return {
+      id: item.id,
+      active: item.active,
+      name: item.name,
+      metadata: item.metadata
+    }
+  },
+  async serializeForVote(this: IAnnotator) {
+    const annotatorInterface = await this.getInterface()
+    const current = await annotatorInterface.current
+    const previous = await annotatorInterface.previous
+    return {
+      // API data
+      id: this.apiId,
+      name: annotatorInterface.name,
+      metadata: annotatorInterface.metadata,
+      itemsLeft: annotatorInterface.items_left,
+      // Choices
+      current: this.serializeItem(current),
+      previous: this.serializeItem(previous)
+    }
+  },
+  async updateChoices(this: IAnnotator) {
+    const annotatorInterface = await this.getInterface()
+    if ((await annotatorInterface.current) === null) {
+      await annotatorInterface.vote(false)
+    }
+    return this
+  },
+  async vote(this: IAnnotator, currentWins: boolean) {
+    const annotatorInterface = await this.getInterface()
+    await annotatorInterface.vote(currentWins)
+    return this
+  },
+  async skip(this: IAnnotator) {
+    const annotatorInterface = await this.getInterface()
+    await annotatorInterface.skip()
+    return this
   }
 }
 
@@ -192,6 +255,13 @@ export interface IAnnotator
   extends Document,
     yup.InferType<typeof annotatorSchemaValidator> {
   getInterface: typeof annotatorMethods.getInterface
+  serializeItem: typeof annotatorMethods.serializeItem
+  serializeForVote: typeof annotatorMethods.serializeForVote
+  getFreshInterface: typeof annotatorMethods.getFreshInterface
+  vote: typeof annotatorMethods.vote
+  skip: typeof annotatorMethods.skip
+  updateChoices: typeof annotatorMethods.updateChoices
+  _resolvedInterface?: ReturnType<typeof annotatorMethods.getFreshInterface>
 }
 /**
  * Type of the Annotator Model

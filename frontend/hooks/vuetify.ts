@@ -6,19 +6,24 @@ import {
   watch,
   getCurrentInstance
 } from '@vue/composition-api'
-import { preferencesStore } from '~/store'
+import { useAuthStorage } from './auth'
 
 export const useDarkTheme = () => {
-  const isDark = computed(() => {
-    const dark = preferencesStore.dark
-    const instance = getCurrentInstance()
-    if (instance) {
-      instance.$vuetify.theme.dark = dark
+  const [theme, setTheme] = useAuthStorage('theme', { dark: false })
+  const instance = getCurrentInstance()
+  watch(
+    () => theme.value.dark,
+    dark => {
+      if (instance) {
+        instance.$vuetify.theme.dark = dark
+      }
     }
-    return dark
+  )
+  const isDark = computed(() => {
+    return theme.value.dark
   })
-  const toggleDark = preferencesStore.toggleDark
-  const setDark = preferencesStore.changeDark
+  const toggleDark = () => setTheme({ dark: !theme.value.dark })
+  const setDark = (dark: boolean) => setTheme({ dark })
   return [isDark, toggleDark, setDark] as [
     typeof isDark,
     typeof toggleDark,
@@ -31,11 +36,19 @@ export const useInvertedTheme = () => {
   const localTheme = reactive({
     isDark: !injectedTheme.isDark
   })
+  const setTheme = (isDark: boolean) => {
+    localTheme.isDark = isDark
+  }
+  const toggleTheme = () => {
+    setTheme(!localTheme.isDark)
+  }
   watch(
     () => injectedTheme.isDark,
     isDark => {
-      localTheme.isDark = !isDark
+      setTheme(!isDark)
     }
   )
   provide('theme', localTheme)
+
+  return [setTheme, toggleTheme] as [typeof setTheme, typeof toggleTheme]
 }

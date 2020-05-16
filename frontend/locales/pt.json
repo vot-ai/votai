@@ -45,6 +45,24 @@
     "requires-password": "Essa pesquisa é protegida por senha",
     "survey-not-found": "Pesquisa não encontrada",
     "header": "Participe de uma pesquisa existente",
-    "body": "Cole o ID da pesquisa para participar"
+    "body": "Cole o ID da pesquisa para participar",
+    "requires-registered-auth": "Você não pode votar anonimamente nesta pesquisa",
+    "item": {
+      "default-link-text": "Abrir link"
+    },
+    "vote-action": {
+      "error": "Opa! Ocorreu um erro ao votar!"
+    },
+    "skip-action": {
+      "error": "Opa! Ocorreu um erro ao pular!"
+    },
+    "annotator-menu": {
+      "no-assigned-choices": {
+        "header": "Você não recebeu nenhum item",
+        "description": "Isso pode acontecer se nenhum item foi adicionado à pesquisa ou se não houver itens disponíveis para você escolher. Tente novamente mais tarde.",
+        "reload-button": "Recarregar"
+      },
+      "skip-button": "Pular decisão"
+    }
   }
 }

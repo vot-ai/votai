@@ -1,9 +1,10 @@
-from typing import Any, Dict
+from typing import Any
+from django.db.models import Count
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_condition import And
+from rest_condition import And, Or
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from backend.permissions.ownership import OwnsObject
@@ -24,11 +25,17 @@ class SurveyAnnotatorViewset(
     lookup_field = "uuid"
     lookup_url_kwarg = "id"
 
-    permission_classes = [And(permissions.IsAuthenticated, OwnsObject)]
+    permission_classes = [
+        And(permissions.IsAuthenticated, Or(OwnsObject, permissions.IsAdminUser))
+    ]
     ownership_field = "survey.owner"
 
     serializer_class = AnnotatorSerializer
-    queryset = Annotator.objects.all()
+    queryset = Annotator.objects.all().annotate(
+        sql_items_left=Count("survey__items", distinct=True)
+        - Count("labels", distinct=True)
+        - Count("ignored", distinct=True)
+    )
 
     def get_queryset(self) -> QueryType[Annotator]:
         survey_uuid = self.kwargs.get("survey_id")

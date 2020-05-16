@@ -347,8 +347,8 @@ export class ItemInterface extends BaseInterface<Item> {
 
 export class AnnotatorInterface extends BaseInterface<Annotator> {
   readonly id: AnnotatorId
-  private _current: (ItemInterface & Item) | null = null
-  private _previous: (ItemInterface & Item) | null = null
+  private _current: (ItemInterface & Item) | null = undefined as any
+  private _previous: (ItemInterface & Item) | null = undefined as any
 
   protected constructor(surveyId: SurveyId, self: Annotator) {
     super(surveyId, self)
@@ -360,7 +360,11 @@ export class AnnotatorInterface extends BaseInterface<Annotator> {
   }
 
   get current() {
-    if (this._current) {
+    if (typeof this._current !== 'undefined') {
+      return Promise.resolve(this._current)
+    }
+    if (this.self.current === null) {
+      this._current = null
       return Promise.resolve(this._current)
     }
     return this.client
@@ -369,10 +373,18 @@ export class AnnotatorInterface extends BaseInterface<Annotator> {
       .then(current => {
         return ItemInterface.createInterface(this.surveyId, current)
       })
+      .then(item => {
+        this._current = item
+        return this._current
+      })
   }
 
   get previous() {
-    if (this._previous) {
+    if (typeof this._previous !== 'undefined') {
+      return Promise.resolve(this._previous)
+    }
+    if (this.self.previous === null) {
+      this._previous = null
       return Promise.resolve(this._previous)
     }
     return this.client
@@ -380,6 +392,10 @@ export class AnnotatorInterface extends BaseInterface<Annotator> {
       .then(response => response.data)
       .then(previous => {
         return ItemInterface.createInterface(this.surveyId, previous)
+      })
+      .then(item => {
+        this._previous = item
+        return this._previous
       })
   }
 
@@ -411,12 +427,16 @@ export class AnnotatorInterface extends BaseInterface<Annotator> {
         this.surveyId,
         response.current
       )
+    } else {
+      this._current = null
     }
     if (response.previous) {
       this._previous = await ItemInterface.createInterface(
         this.surveyId,
         response.previous
       )
+    } else {
+      this._previous = null
     }
     return this
   }

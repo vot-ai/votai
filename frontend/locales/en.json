@@ -45,6 +45,30 @@
     "requires-password": "This survey is password-protected",
     "survey-not-found": "Survey not found",
     "header": "Join an existing survey",
-    "body": "Paste the Survey's ID to join it"
+    "body": "Paste the Survey's ID to join it",
+    "annotator-menu": {
+      "loading-error": "Error loading choices!",
+      "loading-error-try-again": "Try again",
+      "no-assigned-choices": {
+        "header": "You haven't been assigned any items",
+        "description": "This may happen if no items were added to the survey yet or if no items are available for you to pick. Try again later.",
+        "reload-button": "Reload"
+      },
+      "skip-button": "Skip decision",
+      "voting": {
+        "comparisons-counter": "No comparisons left | Last comparison | {count} comparisons left"
+      }
+    },
+    "requires-registered-auth": "You can't vote anonymously on this survey",
+    "item": {
+      "default-link-text": "Open link",
+      "location": "Location: {location}"
+    },
+    "vote-action": {
+      "error": "Oops! There was an error while voting!"
+    },
+    "skip-action": {
+      "error": "Oops! There was an error while skipping!"
+    }
   }
 }

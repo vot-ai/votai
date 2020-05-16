@@ -42,6 +42,13 @@ class Annotator(models.Model):
     def quality(self) -> float:
         return self.alpha / (self.alpha + self.beta)
 
+    @property
+    def items_left(self) -> int:
+        # items_left might be annotated into the object by the viewset
+        if getattr(self, "sql_items_left", None) is not None:
+            return self.sql_items_left
+        return self.survey.items.count() - self.viewed.count()
+
     def update_confidence(self, winner: Item, loser: Item) -> None:
         new_confidence, _ = update_annotator(winner.score, loser.score, self.confidence)
         self.alpha = new_confidence.alpha

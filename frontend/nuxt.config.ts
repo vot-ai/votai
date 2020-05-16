@@ -14,7 +14,7 @@ const frontendSecrets = getSecrets({
 process.env = { ...process.env, ...socialProviderSecrets, ...frontendSecrets }
 
 const config: Configuration = {
-  mode: 'spa',
+  mode: 'universal',
   server: {
     port: 3000,
     host: '0.0.0.0'
@@ -61,8 +61,8 @@ const config: Configuration = {
   plugins: [
     { src: '~/plugins/vuex-persist', ssr: false },
     '~/plugins/components',
-    '~/plugins/accessors',
-    '~/plugins/vue-the-mask'
+    '~/plugins/vue-the-mask',
+    '~/plugins/clipboard'
   ],
   /*
    ** Nuxt.js dev-modules
@@ -129,7 +129,7 @@ const config: Configuration = {
         clientSecret: process.env.GITHUB_CLIENT_SECRET
       }
     },
-    plugins: ['~/plugins/auth.ts']
+    plugins: ['~/plugins/auth.ts', '~/plugins/accessors']
   },
   /*
    ** Axios module configuration
