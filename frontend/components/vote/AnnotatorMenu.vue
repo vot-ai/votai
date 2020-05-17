@@ -49,7 +49,7 @@
             <annotator-item
               current
               :item="state.annotator.current"
-              :even="state.counter % 2 === 0"
+              :even="isEven"
               :first="!state.annotator.previous"
               :loading="state.loading"
               @selected="vote(true)"
@@ -65,7 +65,7 @@
           >
             <annotator-item
               :item="state.annotator.previous"
-              :even="state.counter % 2 === 0"
+              :even="isEven"
               :waiting="!state.annotator.current"
               :last="state.annotator.itemsLeft === 0"
               :loading="state.loading"
@@ -90,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from '@vue/composition-api'
+import { defineComponent, reactive, ref, computed } from '@vue/composition-api'
 import { useToast } from 'vue-toastification/composition'
 import AnnotatorItem from './AnnotatorItem.vue'
 import { SerializedSurvey, SerializedAnnotator } from '~/types/survey'
@@ -117,6 +117,9 @@ export default defineComponent({
 
     const counter = ref(0)
     const increaseCounter = () => counter.value++
+    const isEven = computed(() => {
+      return counter.value % 2 === 0
+    })
 
     const [fetch, fetchState] = useFetchData(async () => {
       const response = await auth.request({
@@ -166,7 +169,7 @@ export default defineComponent({
         })
     }
 
-    return { state, skip, vote, counter, fetch, fetchState }
+    return { state, skip, vote, isEven, fetch, fetchState }
   }
 })
 </script>
@@ -181,9 +184,9 @@ export default defineComponent({
 .list-leave-active {
   transition: all 0s;
   position: absolute;
-  opacity: 0;
 }
-.list-enter {
+.list-enter,
+.list-leave-to {
   opacity: 0;
 }
 </style>

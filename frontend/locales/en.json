@@ -62,7 +62,12 @@
     "requires-registered-auth": "You can't vote anonymously on this survey",
     "item": {
       "default-link-text": "Open link",
-      "location": "Location: {location}"
+      "location": "Location: {location}",
+      "load-next": "Load next",
+      "done": "You're done!",
+      "waiting-next": "Waiting for the next",
+      "choose-current": "Choose current",
+      "choose-previous": "Choose previous"
     },
     "vote-action": {
       "error": "Oops! There was an error while voting!"

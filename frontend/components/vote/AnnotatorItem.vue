@@ -74,18 +74,18 @@ export default defineComponent({
     })
     const buttonText = computed(() => {
       if (props.first) {
-        return 'Load next'
+        return i18n.t('vote.item.load-next')
       }
       if (props.last) {
-        return "You're done!"
+        return i18n.t('vote.item.done')
       }
       if (props.waiting) {
-        return 'Waiting for the next'
+        return i18n.t('vote.item.waiting-next')
       }
       if (props.current) {
-        return 'Choose current'
+        return i18n.t('vote.item.choose-current')
       }
-      return 'Choose previous'
+      return i18n.t('vote.item.choose-previous')
     })
 
     const hasImage = computed(() => !!props.item.metadata.image)
