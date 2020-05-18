@@ -1,38 +1,59 @@
 <template>
-  <transition
-    :appear="appear"
-    :appear-active-class="appearClass"
-    :enter-active-class="enterClass"
-    :leave-active-class="leaveClass"
-    mode="out-in"
-    :duration="300"
-  >
+  <base-transition name="my-fade" v-bind="$attrs" v-on="$listeners">
     <slot />
-  </transition>
+  </base-transition>
 </template>
 
-<script>
-import { defineComponent, computed } from '@vue/composition-api'
+<script lang="ts">
+import { defineComponent } from '@vue/composition-api'
+import BaseTransition from './BaseTransition.vue'
 export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    appear: Boolean,
-    enter: Boolean,
-    leave: Boolean
-  },
-  setup({ appear, enter, leave }) {
-    const fadeIn = 'animated fadeIn'
-    const fadeOut = 'animated fadeOut'
-    const appearClass = computed(() => {
-      return appear ? fadeIn : undefined
-    })
-    const enterClass = computed(() => {
-      return enter ? fadeIn : undefined
-    })
-    const leaveClass = computed(() => {
-      return leave ? fadeOut : undefined
-    })
-    return { appearClass, enterClass, leaveClass }
-  }
+  components: { BaseTransition }
 })
 </script>
+
+<style lang="scss">
+$trans-cubic-bezier: cubic-bezier(0.215, 0.61, 0.355, 1);
+@mixin timing-function {
+  animation-timing-function: $trans-cubic-bezier;
+}
+
+/* ----------------------------------------------
+ * Modified version from Animista
+ * Animista is Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.my-fade-enter-active {
+  animation-name: fadeIn;
+}
+
+.my-fade-leave-active {
+  animation-name: fadeOut;
+}
+
+.my-fade-move {
+  transition-timing-function: ease-in-out;
+  transition-property: all;
+  transition-duration: 400ms;
+}
+</style>

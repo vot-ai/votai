@@ -1,12 +1,21 @@
 <template>
-  <fade-transition enter leave appear>
+  <fade-transition appear group>
     <v-row v-if="fetchState.pending" key="skeletons" justify="center" align="center">
-      <v-col cols="12" sm="6" md="4">
-        <v-skeleton-loader tile type="image, card-heading, list-item-three-line, actions"></v-skeleton-loader>
+      <v-col cols="12">
+        <v-row justify="center" align="center">
+          <v-col class="text-center" cols="6" sm="4" md="2">
+            <v-skeleton-loader tile type="text"></v-skeleton-loader>
+          </v-col>
+        </v-row>
       </v-col>
-      <v-col cols="12" sm="6" md="4">
-        <v-skeleton-loader tile type="image, card-heading, list-item-three-line, actions"></v-skeleton-loader>
-      </v-col>
+      <v-row align="center" justify="center">
+        <v-col cols="11" sm="6" md="4">
+          <v-skeleton-loader tile type="image, card-heading, list-item-three-line, actions"></v-skeleton-loader>
+        </v-col>
+        <v-col cols="11" sm="6" md="4">
+          <v-skeleton-loader tile type="image, card-heading, list-item-three-line, actions"></v-skeleton-loader>
+        </v-col>
+      </v-row>
     </v-row>
     <v-row v-else-if="fetchState.error" key="error" justify="center" align="center">
       <v-col cols="12" sm="6" md="4" align-self="center" class="text-center">
@@ -28,7 +37,7 @@
         <i-btn tile @click="fetch">{{$t('vote.annotator-menu.no-assigned-choices.reload-button')}}</i-btn>
       </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row v-else key="items">
       <v-col cols="12">
         <v-row justify="center" align="center">
           <v-col class="text-center" cols="12">
@@ -37,7 +46,7 @@
             >{{$tc('vote.annotator-menu.voting.comparisons-counter', state.annotator.itemsLeft)}}</h3>
           </v-col>
         </v-row>
-        <transition-group name="list" tag="div" class="row align-center justify-center">
+        <fade-transition group tag="div" class="row align-center justify-center">
           <v-col
             v-if="state.annotator.current"
             :key="state.annotator.current.id"
@@ -72,7 +81,7 @@
               @selected="vote(false)"
             />
           </v-col>
-        </transition-group>
+        </fade-transition>
         <v-row justify="center" align="center">
           <v-col class="text-center" cols="12">
             <v-btn
@@ -182,7 +191,7 @@ export default defineComponent({
   transition: all 2s;
 }
 .list-leave-active {
-  transition: all 0s;
+  transition: all 2s;
   position: absolute;
 }
 .list-enter,

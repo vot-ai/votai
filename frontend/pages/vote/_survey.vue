@@ -1,9 +1,10 @@
 <template>
   <content-container>
-    <fade-transition enter leave appear>
+    <fade-transition appear group>
       <div v-if="fetchState.pending" key="skeletons">
-        <v-skeleton-loader class="mt-5" tile type="article"></v-skeleton-loader>
         <v-skeleton-loader class="mt-5" tile type="heading"></v-skeleton-loader>
+        <v-skeleton-loader class="mt-5" tile type="paragraph"></v-skeleton-loader>
+        <v-skeleton-loader class="mt-3" tile type="chip"></v-skeleton-loader>
       </div>
       <div v-else-if="fetchState.error" key="error">
         <h1 key="error" class="display-2 font-weight-thin my-5">{{$t('vote.survey-not-found')}}</h1>
@@ -24,7 +25,7 @@
             <span v-else>ID copied!</span>
           </v-tooltip>
         </h3>
-        <fade-transition enter leave>
+        <fade-transition group>
           <!-- The user is not authenticated -->
           <div v-if="!$auth.loggedIn" key="not-logged">
             <v-row align="center" justify="center">
@@ -63,7 +64,7 @@
             </v-row>
           </div>
           <!-- User has access -->
-          <div v-else>
+          <div v-else key="menu">
             <annotator-menu :survey="state.survey" />
           </div>
         </fade-transition>
