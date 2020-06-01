@@ -39,6 +39,12 @@ const config: Configuration = {
       }
     ],
     link: [
+      {
+        rel: 'stylesheet',
+        type: 'text/css',
+        href:
+          'https://fonts.googleapis.com/css?family=Major+Mono+Display|Roboto:300&display=swap'
+      },
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
@@ -135,7 +141,10 @@ const config: Configuration = {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    baseURL: process.env.API_URL || 'http://frontend:3000',
+    browserBaseURL: process.env.API_URL_BROWSER || ''
+  },
   /**
    * i18n module configuration
    * See https://nuxt-community.github.io/nuxt-i18n/
