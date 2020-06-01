@@ -146,7 +146,7 @@ if REDIS_URL:
         "default": {
             "BACKEND": "django_redis.cache.RedisCache"
             if DEBUG
-            else "django_prometheus.cache.backends.redis",
+            else "django_prometheus.cache.backends.redis.RedisCache",
             "LOCATION": os.environ.get("REDIS_URL"),
             "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
             "KEY_PREFIX": "djangocache",
