@@ -5,7 +5,6 @@
         <v-img
           :src="item.metadata.image"
           lazy-src="/placeholder.png"
-          aspect-ratio="16/9"
           class="image-hover"
           eager
           :class="hover ? 'image-hovered elevation-5' : ''"
