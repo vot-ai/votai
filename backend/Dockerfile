@@ -19,7 +19,6 @@ WORKDIR /app
 
 ## add user
 RUN addgroup --system user && adduser --system --group user
-RUN chown -R user:user /app && chmod -R 755 /app
 RUN mkdir /prometheus_tmp
 RUN chown -R user:user /prometheus_tmp && chmod -R 755 /prometheus_tmp
 
@@ -28,12 +27,8 @@ RUN pip install -U setuptools pip
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Preinstall commands
-FROM base as preinstall
-
-
 # Running global install
-FROM preinstall as install
+FROM base as install
 
 # copy app and install python dependencies
 COPY requirements.txt /app/requirements.txt
@@ -45,6 +40,9 @@ FROM install as prod-postinstall
 COPY ./ /app/
 
 RUN python manage.py collectstatic --noinput
+
+# Configure user ownership
+RUN chown -R user:user /app && chmod -R 755 /app
 
 # Dev Postinstall
 FROM install as dev-postinstall
@@ -83,7 +81,7 @@ COPY --from=cleanup /opt/venv /opt/venv
 COPY docker-entrypoint.sh docker-entrypoint.sh
 RUN chmod a+x docker-entrypoint.sh
 
-## switch to non-root user
+# switch to non-root user
 USER user
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

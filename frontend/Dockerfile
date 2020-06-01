@@ -10,7 +10,6 @@ RUN mkdir /app/node_modules
 
 ## add user
 RUN addgroup -S user && adduser -S user -G user
-RUN chown -R user:user /app && chmod -R 755 /app
 RUN chown -R user:user /app/node_modules && chmod -R 755 /app/node_modules
 
 # Install Dockerize
@@ -31,7 +30,7 @@ COPY package.json /app/
 
 RUN apk add python make g++
 
-RUN yarn
+RUN yarn install
 
 COPY ./ /app/
 
@@ -51,9 +50,11 @@ CMD ["yarn", "dev"]
 
 FROM cleanup as prod-prefinal
 
-RUN yarn build
-
 COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Configure folder ownership
+RUN chown -R user:user /app && chmod -R 755 /app
+
 CMD ["yarn", "start"]
 
 FROM ${APP_ENV}-prefinal as final
