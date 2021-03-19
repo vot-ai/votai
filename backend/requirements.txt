@@ -24,7 +24,7 @@ django-celery-email==3.0.0
 
 # REST
 django-cors-headers==3.2.1
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djangorestframework-simplejwt==4.4.0
 dj-rest-auth[with_social]==1.0.4
 rest-condition==1.0.3
