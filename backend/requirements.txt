@@ -17,7 +17,7 @@ django-debug-toolbar==2.2
 django-health-check==3.12.1
 
 # Worker
-celery==4.4.2
+celery==5.2.2
 django-redis==4.11.0
 redis==3.5.0
 django-celery-email==3.0.0
